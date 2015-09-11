@@ -7,6 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +32,18 @@ public class MovieInfoAdapter extends BaseAdapter {
         movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
         movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
         movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+
     }
 
 
@@ -61,7 +75,7 @@ public class MovieInfoAdapter extends BaseAdapter {
             posterView.setPadding(8, 8, 8, 8);                                                 // FIXME: Make padding configurable
         }
 
-        posterView.setImageResource(R.drawable.straight_outta_compton);                        // FIXME: Pull the appropriate Image
+        Picasso.with(this.context).load(R.drawable.straight_outta_compton).into(posterView);
 
         return posterView;
     }
