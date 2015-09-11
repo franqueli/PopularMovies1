@@ -4,8 +4,12 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -22,6 +26,10 @@ public class MovieInfoAdapter extends BaseAdapter {
     public MovieInfoAdapter(Context context) {
         this.context = context;
         movieInfoList = new ArrayList<>();
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
     }
 
 
@@ -42,6 +50,19 @@ public class MovieInfoAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        ImageView posterView;
+
+        if (convertView != null) {
+            posterView = (ImageView)convertView;
+        } else {
+            posterView = new ImageView(this.context);
+            posterView.setLayoutParams(new GridView.LayoutParams(200, 400));                   // FIXME: Make these configurable constant that we can change
+            posterView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            posterView.setPadding(8, 8, 8, 8);                                               // FIXME: Make padding configurable
+        }
+
+        posterView.setImageResource(R.drawable.straight_outta_compton);
+
+        return posterView;
     }
 }
