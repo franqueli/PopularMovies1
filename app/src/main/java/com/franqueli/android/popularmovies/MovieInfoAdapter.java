@@ -58,10 +58,10 @@ public class MovieInfoAdapter extends BaseAdapter {
             posterView = new ImageView(this.context);
             posterView.setLayoutParams(new GridView.LayoutParams(200, 400));                   // FIXME: Make these configurable constant that we can change
             posterView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            posterView.setPadding(8, 8, 8, 8);                                               // FIXME: Make padding configurable
+            posterView.setPadding(8, 8, 8, 8);                                                 // FIXME: Make padding configurable
         }
 
-        posterView.setImageResource(R.drawable.straight_outta_compton);
+        posterView.setImageResource(R.drawable.straight_outta_compton);                        // FIXME: Pull the appropriate Image
 
         return posterView;
     }
