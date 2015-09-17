@@ -1,5 +1,8 @@
 package com.franqueli.android.popularmovies;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,6 +31,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            DownloadMovieInfoTask movieInfoTask = new DownloadMovieInfoTask();
+            movieInfoTask.execute(getString(R.string.moviedb_api_key));
+        } else {
+            // TODO-fm: Instead of displaying a toast message. Display a message in the main view. Along with a retry.
+            Toast.makeText(MainActivity.this, "No network available", LENGTH_SHORT).show();
+        }
     }
 
     @Override
