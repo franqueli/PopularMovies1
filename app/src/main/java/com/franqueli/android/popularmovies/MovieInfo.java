@@ -12,16 +12,18 @@ import java.util.Date;
 public class MovieInfo {
     private String title;
     private String synopsis;
-    private int rating;
+    private float rating;
     private Date releaseDate;
+    private String posterPath;
     private Image poster;                   // TODO : Just store the reference to the file from Picasso
     private Image posterThumbnail;          // TODO : Just store the reference to the file from Picasso
 
-    public MovieInfo(String title, String synopsis, int rating, Date releaseDate) {
+    public MovieInfo(String title, String synopsis, String posterPath, float rating, Date releaseDate) {
         this.title = title;
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
+        this.posterPath = posterPath;
     }
 
     public String getTitle() {
@@ -32,11 +34,15 @@ public class MovieInfo {
         return synopsis;
     }
 
-    public int getRating () {
+    public float getRating() {
         return rating;
     }
 
-    public Image getPoster () {
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public Image getPoster() {
         // TODO : if image doesn't exist return a placeholder
         return this.poster;
     }
@@ -46,4 +52,8 @@ public class MovieInfo {
     }
 
 
+    @Override
+    public String toString() {
+        return "Title " + title + " " + "PosterPath: " + posterPath + "\n";
+    }
 }

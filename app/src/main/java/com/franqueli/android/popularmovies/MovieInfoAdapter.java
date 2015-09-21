@@ -28,21 +28,21 @@ public class MovieInfoAdapter extends BaseAdapter {
     public MovieInfoAdapter(Context context) {
         this.context = context;
         movieInfoList = new ArrayList<>();
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
+        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, Calendar.getInstance().getTime()));
 
     }
 

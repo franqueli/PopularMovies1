@@ -1,15 +1,22 @@
 package com.franqueli.android.popularmovies;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.util.JsonReader;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by Franqueli Mendez on 9/10/15.
@@ -18,6 +25,15 @@ import java.net.URL;
  */
 public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
 
+    private SimpleDateFormat movieInfoReleaseDateFormat;
+
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        movieInfoReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -35,7 +51,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
         String movieInfo;
         InputStream is = null;
         try {
-            String urlString = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=" + apiKey;               // FIXME: The api key needs to be part of the configuration and not shipped with the code
+            String urlString = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=" + apiKey;               // FIXME: Create utility class for moviedb urls
             URL popularMoviesURL = new URL(urlString);
 
             HttpURLConnection conn = (HttpURLConnection) popularMoviesURL.openConnection();
@@ -65,6 +81,19 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         Log.i("DownloadMovieInfo", "*** Result: " + s);                                             // TODO : Parse the returned string and save it to a db. Maybe good use of SugarORM here
+
+
+        List movieInfoList = null;
+        try {
+            movieInfoList = readMovieInfoJsonStream(new ByteArrayInputStream(s.getBytes("UTF-8")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("DownloadMovieTask", "" + movieInfoList);
+
     }
 
     private String readIt(InputStream urlInputStream) throws IOException {
@@ -78,5 +107,77 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
         }
 
         return contentString.toString();
+    }
+
+
+    private List<MovieInfo> readMovieInfoJsonStream (InputStream in) throws IOException, ParseException {
+        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+
+        try {
+            return processPopularMovieResponse(reader);
+        } finally {
+            reader.close();
+        }
+    }
+
+    private List<MovieInfo> processPopularMovieResponse(JsonReader reader) throws IOException, ParseException {
+        List<MovieInfo> movieInfoList = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("results")) {
+                // TODO: Process movie info list
+                movieInfoList = processPopularMovieList(reader);
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+
+        if (movieInfoList == null) {
+            movieInfoList = new ArrayList<>();
+        }
+
+        return movieInfoList;
+    }
+
+    private List<MovieInfo> processPopularMovieList(JsonReader reader) throws IOException, ParseException {
+        List<MovieInfo> movieInfoList = new ArrayList<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+
+            String title = null;
+            String synonsis = null;
+            double rating = 0.0;
+            String posterPath = null;
+            Date releaseDate = null;
+
+            reader.beginObject();
+            while(reader.hasNext()) {
+                String name = reader.nextName();
+                if (name.equals("original_title")) {
+                    title = reader.nextString();
+                } else if (name.equals("overview")) {
+                    synonsis = reader.nextString();
+                } else if (name.equals("vote_average")) {
+                    rating = reader.nextDouble();
+                } else if (name.equals("poster_path")) {
+                    posterPath = reader.nextString();
+                } else if (name.equals("release_date")) {
+                    releaseDate = this.movieInfoReleaseDateFormat.parse(reader.nextString());
+                } else {
+                    reader.skipValue();
+                }
+
+                movieInfoList.add(new MovieInfo(title, synonsis, posterPath, (float)rating, releaseDate));
+            }
+            reader.endObject();
+
+        }
+        reader.endArray();
+
+        return movieInfoList;
     }
 }
