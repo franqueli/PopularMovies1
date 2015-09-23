@@ -170,11 +170,10 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
                 } else {
                     reader.skipValue();
                 }
-
-                movieInfoList.add(new MovieInfo(title, synonsis, posterPath, (float)rating, releaseDate));
             }
             reader.endObject();
 
+            movieInfoList.add(new MovieInfo(title, synonsis, posterPath, (float) rating, releaseDate));
         }
         reader.endArray();
 
