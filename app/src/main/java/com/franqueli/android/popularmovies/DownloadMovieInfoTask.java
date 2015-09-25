@@ -1,8 +1,11 @@
 package com.franqueli.android.popularmovies;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.JsonReader;
 import android.util.Log;
+
+import com.franqueli.android.popularmovies.model.MovieInfo;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -15,8 +18,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Franqueli Mendez on 9/10/15.
@@ -24,7 +27,7 @@ import java.util.List;
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
 public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
-
+    private String LOG_TAG = DownloadMovieInfoTask.class.getSimpleName();
     private SimpleDateFormat movieInfoReleaseDateFormat;
 
 
@@ -32,7 +35,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        movieInfoReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        movieInfoReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
         try {
             result = downloadMovieInfo(params[0]);
         } catch (IOException e) {
-            Log.d("DownloadMovieInfo", "DownloadMovieInfo: " + e.getMessage());
+            Log.d(LOG_TAG, "DownloadMovieInfo: " + e.getMessage());
         }
 
         return result;
@@ -62,7 +65,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
             // Starts the query
             conn.connect();
             int response = conn.getResponseCode();
-            Log.d("DownloadMovieTask", "The response is: " + response);
+            Log.d(LOG_TAG, "The response is: " + response);
             is = conn.getInputStream();
 
             // Convert the InputStream into a string
@@ -80,7 +83,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        Log.i("DownloadMovieInfo", "*** Result: " + s);                                             // TODO : Parse the returned string and save it to a db. Maybe good use of SugarORM here
+        Log.i(LOG_TAG, "*** Result: " + s);                                             // TODO : Parse the returned string and save it to a db. Maybe good use of SugarORM here
 
 
         List movieInfoList = null;
@@ -92,7 +95,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-        Log.d("DownloadMovieTask", "" + movieInfoList);
+        Log.d(LOG_TAG, "" + movieInfoList);
 
     }
 
@@ -151,6 +154,7 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
             String title = null;
             String synonsis = null;
             double rating = 0.0;
+            double popularity = 0.0;
             String posterPath = null;
             Date releaseDate = null;
 
@@ -167,13 +171,18 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
                     posterPath = reader.nextString();
                 } else if (name.equals("release_date")) {
                     releaseDate = this.movieInfoReleaseDateFormat.parse(reader.nextString());
+                } else if (name.equals("popularity")) {
+                    popularity = reader.nextDouble();
                 } else {
                     reader.skipValue();
                 }
             }
             reader.endObject();
 
-            movieInfoList.add(new MovieInfo(title, synonsis, posterPath, (float) rating, releaseDate));
+            // We've retrieved all the properties we need from the json. Now lets save it as an object
+            MovieInfo currMovieInfo = new MovieInfo(title, synonsis, posterPath, (float) rating, (float)popularity, releaseDate);
+            currMovieInfo.save();
+            movieInfoList.add(currMovieInfo);
         }
         reader.endArray();
 

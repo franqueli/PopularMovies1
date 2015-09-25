@@ -1,6 +1,8 @@
-package com.franqueli.android.popularmovies;
+package com.franqueli.android.popularmovies.model;
 
 import android.media.Image;
+
+import com.orm.SugarRecord;
 
 import java.util.Date;
 
@@ -9,21 +11,27 @@ import java.util.Date;
  * <p/>
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
-public class MovieInfo {
+public class MovieInfo extends SugarRecord<MovieInfo> {
     private String title;
     private String synopsis;
     private float rating;
     private Date releaseDate;
     private String posterPath;
-    private Image poster;                   // TODO : Just store the reference to the file from Picasso
-    private Image posterThumbnail;          // TODO : Just store the reference to the file from Picasso
+    private float popularity;
 
-    public MovieInfo(String title, String synopsis, String posterPath, float rating, Date releaseDate) {
+    // Default constructor for SugarORM
+    public MovieInfo() {
+
+    }
+
+
+    public MovieInfo(String title, String synopsis, String posterPath, float rating, float popularity, Date releaseDate) {
         this.title = title;
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
+        this.popularity = popularity;
     }
 
     public String getTitle() {
@@ -42,18 +50,12 @@ public class MovieInfo {
         return posterPath;
     }
 
-    public Image getPoster() {
-        // TODO : if image doesn't exist return a placeholder
-        return this.poster;
+    public float getPopularity() {
+        return popularity;
     }
-
-    public Image getPosterThumbnail () {
-        return this.posterThumbnail;
-    }
-
 
     @Override
     public String toString() {
-        return "Title " + title + " " + "PosterPath: " + posterPath + "\n";
+        return "Popularity " + popularity + "Title " + title + " " + "PosterPath: " + posterPath;
     }
 }
