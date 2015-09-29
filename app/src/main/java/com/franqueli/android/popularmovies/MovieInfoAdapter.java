@@ -27,23 +27,7 @@ public class MovieInfoAdapter extends BaseAdapter {
 
     public MovieInfoAdapter(Context context) {
         this.context = context;
-        movieInfoList = new ArrayList<>();
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-        movieInfoList.add(new MovieInfo("Straight Outta Compton", "Dr.Dre, Easy E", "img.jpg", 3, 1.0f, Calendar.getInstance().getTime()));
-
+        movieInfoList = MovieInfo.listAll(MovieInfo.class);
     }
 
 
@@ -75,7 +59,7 @@ public class MovieInfoAdapter extends BaseAdapter {
             posterView.setPadding(8, 8, 8, 8);                                                 // FIXME: Make padding configurable
         }
 
-        Picasso.with(this.context).load(R.drawable.straight_outta_compton).into(posterView);
+        Picasso.with(this.context).load(movieInfoList.get(position).getPosterURL()).into(posterView);
 
         return posterView;
     }

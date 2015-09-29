@@ -3,6 +3,7 @@ package com.franqueli.android.popularmovies.model;
 import android.media.Image;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 import java.util.Date;
 
@@ -53,6 +54,12 @@ public class MovieInfo extends SugarRecord<MovieInfo> {
     public float getPopularity() {
         return popularity;
     }
+
+    @Ignore
+    public String getPosterURL() {
+        return "http://image.tmdb.org/t/p/" + "w185" + posterPath;              // TODO-fm: May want to get the appropriate size based on the device.
+    }
+
 
     @Override
     public String toString() {

@@ -148,6 +148,9 @@ public class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
     private List<MovieInfo> processPopularMovieList(JsonReader reader) throws IOException, ParseException {
         List<MovieInfo> movieInfoList = new ArrayList<>();
 
+        // Clear out all the old popular movies
+        MovieInfo.deleteAll(MovieInfo.class);
+
         reader.beginArray();
         while (reader.hasNext()) {
 
