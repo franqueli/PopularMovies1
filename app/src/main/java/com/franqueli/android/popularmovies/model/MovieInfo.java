@@ -63,6 +63,6 @@ public class MovieInfo extends SugarRecord<MovieInfo> {
 
     @Override
     public String toString() {
-        return "Popularity " + popularity + "Title " + title + " " + "PosterPath: " + posterPath;
+        return "ID: " + id + " Popularity: " + popularity + " Title: " + title  + " PosterPath: " + posterPath;
     }
 }

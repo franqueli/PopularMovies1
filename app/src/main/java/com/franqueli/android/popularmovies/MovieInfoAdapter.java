@@ -38,12 +38,12 @@ public class MovieInfoAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return movieInfoList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return movieInfoList.get(position).getId();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MovieInfoAdapter extends BaseAdapter {
             posterView = (ImageView)convertView;
         } else {
             posterView = new ImageView(this.context);
-            posterView.setLayoutParams(new GridView.LayoutParams(200, 400));                   // FIXME: Make these configurable constant that we can change
+            posterView.setLayoutParams(new GridView.LayoutParams(185, 278));                   // FIXME: Make these configurable constant that we can change
             posterView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             posterView.setPadding(8, 8, 8, 8);                                                 // FIXME: Make padding configurable
         }
