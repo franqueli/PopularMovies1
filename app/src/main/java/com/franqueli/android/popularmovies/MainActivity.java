@@ -1,6 +1,7 @@
 package com.franqueli.android.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -56,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (selectedMovie != null) {
                     Toast.makeText(MainActivity.this, "Clicked item: " + selectedMovie.getTitle(), LENGTH_SHORT).show();
+
+                    Intent showMovieDetailIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
+                    showMovieDetailIntent.putExtra(MovieDetailActivity.MOVIE_ID_PARAM, id);
+                    startActivity(showMovieDetailIntent);
                 }
             }
         });
@@ -174,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "" + movieInfoList);
 
             // FIXME : Need to update UI now that the data has changed
-            movieInfoAdapter.notifyDataSetChanged();
+            movieInfoAdapter = new MovieInfoAdapter(MainActivity.this);
+            movieGridView.setAdapter(movieInfoAdapter);
         }
 
         private String readIt(InputStream urlInputStream) throws IOException {

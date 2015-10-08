@@ -1,11 +1,31 @@
 package com.franqueli.android.popularmovies;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.franqueli.android.popularmovies.model.MovieInfo;
+import com.orm.SugarRecord;
+import com.squareup.picasso.Picasso;
 
 public class MovieDetailActivity extends AppCompatActivity {
+
+    public static final String MOVIE_ID_PARAM = "com.franqueli.android.popularmovies.MOVIE_ID";
+
+    private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
+
+    private ImageView posterImageView;
+    private TextView titleTextView;
+    private TextView releaseDateTextView;
+    private TextView synopsisTextView;
+
+
+    private long movieIdParam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,27 +33,26 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_movie_detail);
 
+        posterImageView = (ImageView)findViewById(R.id.movieDetailImageView);
+        titleTextView = (TextView)findViewById(R.id.movieDetailTitleTextView);
+        releaseDateTextView = (TextView) findViewById(R.id.movieDetailReleaseDateTextView);
+        synopsisTextView = (TextView)findViewById(R.id.movieDetailSynopsisTextView);
+
+        Intent intent = getIntent();
+        movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
+
+        Log.d(LOG_TAG, "*** MovieParam: " + movieIdParam);
+
+        synopsisTextView.setText("My Movie Synopsis");
+
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
-        return true;
-    }
+    protected void onResume() {
+        super.onResume();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        Picasso.with(this).load(movieInfo.getPosterURL()).into(posterImageView);
     }
 }
