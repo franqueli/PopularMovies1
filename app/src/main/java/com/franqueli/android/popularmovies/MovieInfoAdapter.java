@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.franqueli.android.popularmovies.model.MovieInfo;
@@ -54,12 +53,11 @@ public class MovieInfoAdapter extends BaseAdapter {
             posterView = (ImageView)convertView;
         } else {
             posterView = new ImageView(this.context);
-            posterView.setLayoutParams(new GridView.LayoutParams(185, 278));                   // FIXME: Make these configurable constant that we can change
-            posterView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            posterView.setPadding(8, 8, 8, 8);                                                 // FIXME: Make padding configurable
+            posterView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            posterView.setAdjustViewBounds(true);
         }
 
-        Picasso.with(this.context).load(movieInfoList.get(position).getPosterURL()).into(posterView);
+        Picasso.with(posterView.getContext()).load(movieInfoList.get(position).getPosterURL()).into(posterView);
 
         return posterView;
     }
