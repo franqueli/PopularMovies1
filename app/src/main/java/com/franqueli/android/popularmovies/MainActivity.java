@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sort) {
             return true;
         }
 
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(LOG_TAG, "" + movieInfoList);
 
-            // FIXME : Need to update UI now that the data has changed
             movieInfoAdapter = new MovieInfoAdapter(MainActivity.this);
             movieGridView.setAdapter(movieInfoAdapter);
         }
