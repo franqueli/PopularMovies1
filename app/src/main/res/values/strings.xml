@@ -3,6 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_sort">Sort Order</string>
+    <string name="action_sort_popular">Most Popular</string>
+    <string name="action_sort_rating">Highest Rating</string>
     <string name="moviedb_api_key">MOVIEDB_API_KEY_HERE</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
 </resources>
