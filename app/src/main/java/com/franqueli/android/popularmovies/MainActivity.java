@@ -36,7 +36,11 @@ import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private static final String[] SORT_OPTIONS = new String[]{"Popularity", "Rating"};
+
     protected GridView movieGridView;
     protected MovieInfoAdapter movieInfoAdapter;
 
@@ -89,9 +93,11 @@ public class MainActivity extends AppCompatActivity {
 
         Spinner sortSpinner = (Spinner)menuItem.getActionView();
 
-        String[] sortOptions = {"Popularity", "Rating"};
+        ArrayAdapter<String> sortOptionsAdaptor = new ArrayAdapter<>(this, R.layout.sort_spinner_layout, SORT_OPTIONS);
+        sortOptionsAdaptor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        sortSpinner.setAdapter(new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, sortOptions));
+        sortSpinner.setAdapter(sortOptionsAdaptor);
+        sortSpinner.setOnItemSelectedListener(this);
 
         return true;
     }
@@ -109,6 +115,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[position]);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        Log.d(LOG_TAG, "Nothing Selected");
     }
 
     /**
