@@ -22,14 +22,36 @@ import java.util.List;
 public class MovieInfoAdapter extends BaseAdapter {
     private Context context;
 
+    private SortOptionsEnum sortBy;
     private List <MovieInfo>movieInfoList;
 
-    public MovieInfoAdapter(Context context) {
+    public MovieInfoAdapter(Context context, SortOptionsEnum sortBy) {
         this.context = context;
-        movieInfoList = MovieInfo.listAll(MovieInfo.class);
+        this.sortBy = sortBy;
+
+        refreshMovieList(sortBy);
     }
 
-    // TODO-fm: Need to sort the list
+    private void refreshMovieList(SortOptionsEnum sortBy) {
+        String orderBy = null;
+        switch (sortBy) {
+            case Popularity:
+                orderBy = "popularity desc";
+                break;
+            case Rating:
+                orderBy = "rating desc";
+                break;
+        }
+
+        movieInfoList = MovieInfo.find(MovieInfo.class, "", null, "", orderBy, "");
+    }
+
+    public void setSortBy(SortOptionsEnum sortBy) {
+        this.sortBy = sortBy;
+
+        refreshMovieList(this.sortBy);
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.selectedSortIndex = preferences.getInt(SELECTED_SORT_PREF, 0);
 
         // Pass the selected Sort Type to the adaptor
-        movieInfoAdapter = new MovieInfoAdapter(this);
+        movieInfoAdapter = new MovieInfoAdapter(this, SortOptionsEnum.Popularity);
         movieGridView = (GridView) findViewById(R.id.gridview);
         movieGridView.setStretchMode(GridView.NO_STRETCH);
         movieGridView.setAdapter(movieInfoAdapter);
@@ -137,8 +137,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[position]);
-
-
+        this.movieInfoAdapter.setSortBy(SORT_OPTIONS[position]);
     }
 
     @Override
@@ -251,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             Log.d(LOG_TAG, "" + movieInfoList);
 
-            movieInfoAdapter = new MovieInfoAdapter(MainActivity.this);
+            movieInfoAdapter = new MovieInfoAdapter(MainActivity.this, SortOptionsEnum.Popularity);
             movieGridView.setAdapter(movieInfoAdapter);
         }
 
