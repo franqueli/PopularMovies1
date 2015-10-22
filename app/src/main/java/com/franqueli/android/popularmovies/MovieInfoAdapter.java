@@ -29,6 +29,7 @@ public class MovieInfoAdapter extends BaseAdapter {
         movieInfoList = MovieInfo.listAll(MovieInfo.class);
     }
 
+    // TODO-fm: Need to sort the list
 
     @Override
     public int getCount() {

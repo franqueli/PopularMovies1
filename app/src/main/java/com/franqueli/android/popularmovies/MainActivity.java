@@ -2,6 +2,7 @@ package com.franqueli.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -39,17 +40,28 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private static final String[] SORT_OPTIONS = new String[]{"Popularity", "Rating"};
+    public static final String LAST_SYNCED_PREF = "last_synced";
+    public static final String SELECTED_SORT_PREF = "sort_selected";
+
+    private static final SortOptionsEnum[] SORT_OPTIONS = new SortOptionsEnum[]{SortOptionsEnum.Popularity, SortOptionsEnum.Rating};
 
     protected GridView movieGridView;
     protected MovieInfoAdapter movieInfoAdapter;
+
+    private SharedPreferences preferences;
+    private int selectedSortIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        movieInfoAdapter= new MovieInfoAdapter(this);
+        this.preferences = getSharedPreferences("Sync", MODE_PRIVATE);
+
+        this.selectedSortIndex = preferences.getInt(SELECTED_SORT_PREF, 0);
+
+        // Pass the selected Sort Type to the adaptor
+        movieInfoAdapter = new MovieInfoAdapter(this);
         movieGridView = (GridView) findViewById(R.id.gridview);
         movieGridView.setStretchMode(GridView.NO_STRETCH);
         movieGridView.setAdapter(movieInfoAdapter);
@@ -72,16 +84,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
 
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            DownloadMovieInfoTask movieInfoTask = new DownloadMovieInfoTask();
-            movieInfoTask.execute(getString(R.string.moviedb_api_key));
-        } else {
-            // TODO-fm: Instead of displaying a toast message. Display a message in the main view. Along with a retry.
-            Toast.makeText(MainActivity.this, "No network available", LENGTH_SHORT).show();
-        }
+        syncMovieMetadata();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(SELECTED_SORT_PREF, selectedSortIndex);
+        editor.apply();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -91,9 +108,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         MenuItem menuItem = menu.findItem(R.id.action_sort);
 
-        Spinner sortSpinner = (Spinner)menuItem.getActionView();
+        Spinner sortSpinner = (Spinner) menuItem.getActionView();
 
-        ArrayAdapter<String> sortOptionsAdaptor = new ArrayAdapter<>(this, R.layout.sort_spinner_layout, SORT_OPTIONS);
+        ArrayAdapter<SortOptionsEnum> sortOptionsAdaptor = new ArrayAdapter<>(this, R.layout.sort_spinner_layout, SORT_OPTIONS);
         sortOptionsAdaptor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         sortSpinner.setAdapter(sortOptionsAdaptor);
@@ -120,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[position]);
+
+
     }
 
     @Override
@@ -127,9 +146,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d(LOG_TAG, "Nothing Selected");
     }
 
+
+
+    private void syncMovieMetadata() {
+        long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
+
+        Date lastSyncedTime = lastSynced > 0 ? new Date(lastSynced) : null;
+
+        long fifteenMinutesAgoInMillis = System.currentTimeMillis() - (15 * 60 * 1000);
+        if (lastSyncedTime == null || lastSyncedTime.before(new Date(fifteenMinutesAgoInMillis))) {
+            Log.d(LOG_TAG, "**** Syncing: " + lastSynced);
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // fetch data
+                DownloadMovieInfoTask movieInfoTask = new DownloadMovieInfoTask();
+                movieInfoTask.execute(getString(R.string.moviedb_api_key));
+            } else {
+                // TODO-fm: Instead of displaying a toast message. Display a message in the main view. Along with a retry.
+                Toast.makeText(MainActivity.this, "No network available", LENGTH_SHORT).show();
+            }
+        } else {
+            Log.d(LOG_TAG, "**** Last Synced: " + lastSynced);
+        }
+    }
+
+
+
     /**
      * Created by Franqueli Mendez on 9/10/15.
-     * <p>
+     * <p/>
      * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
      */
     class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
@@ -165,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 HttpURLConnection conn = (HttpURLConnection) popularMoviesURL.openConnection();
                 conn.setReadTimeout(10000);                     // 10 sec
-                conn.setConnectTimeout(15000 );                 // 15 sec
+                conn.setConnectTimeout(15000);                 // 15 sec
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
 
@@ -223,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 
-        private List<MovieInfo> readMovieInfoJsonStream (InputStream in) throws IOException, ParseException {
+        private List<MovieInfo> readMovieInfoJsonStream(InputStream in) throws IOException, ParseException {
             JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 
             try {
@@ -272,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Date releaseDate = null;
 
                 reader.beginObject();
-                while(reader.hasNext()) {
+                while (reader.hasNext()) {
                     String name = reader.nextName();
                     if (name.equals("original_title")) {
                         title = reader.nextString();
@@ -293,11 +339,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 reader.endObject();
 
                 // We've retrieved all the properties we need from the json. Now lets save it as an object
-                MovieInfo currMovieInfo = new MovieInfo(title, synonsis, posterPath, (float) rating, (float)popularity, releaseDate);
+                MovieInfo currMovieInfo = new MovieInfo(title, synonsis, posterPath, (float) rating, (float) popularity, releaseDate);
                 currMovieInfo.save();
                 movieInfoList.add(currMovieInfo);
             }
             reader.endArray();
+
+            SharedPreferences.Editor editor = MainActivity.this.preferences.edit();
+            editor.putLong(LAST_SYNCED_PREF, System.currentTimeMillis());
+            editor.apply();
 
             return movieInfoList;
         }
