@@ -55,6 +55,10 @@ public class MovieInfo extends SugarRecord<MovieInfo> {
         return popularity;
     }
 
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
     @Ignore
     public String getPosterURL() {
         return "http://image.tmdb.org/t/p/" + "w185" + posterPath;              // TODO-fm: May want to get the appropriate size based on the device.

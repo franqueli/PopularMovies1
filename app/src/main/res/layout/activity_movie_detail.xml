@@ -31,28 +31,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New Text" />
-
-        <TextView
-            android:id="@+id/movieDetailRatingTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New Text" />
+            android:text="New Text"
+            android:layout_marginStart="10dp" />
 
         <TextView
             android:id="@+id/movieDetailReleaseDateTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New Text" />
+            android:text="New Text"
+            android:layout_marginStart="10dp" />
+
+        <TextView
+            android:id="@+id/movieDetailRatingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="New Text"
+            android:layout_marginStart="10dp" />
 
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/MovieSynopsisStyle"
         android:text="Large Text"
         android:id="@+id/movieDetailSynopsisTextView"
         android:layout_below="@+id/movieDetailImageView"

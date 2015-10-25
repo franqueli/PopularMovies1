@@ -13,6 +13,10 @@ import com.franqueli.android.popularmovies.model.MovieInfo;
 import com.orm.SugarRecord;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     public static final String MOVIE_ID_PARAM = "com.franqueli.android.popularmovies.MOVIE_ID";
@@ -22,6 +26,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ImageView posterImageView;
     private TextView titleTextView;
     private TextView releaseDateTextView;
+    private TextView ratingTextView;
     private TextView synopsisTextView;
 
 
@@ -33,18 +38,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_movie_detail);
 
-        posterImageView = (ImageView)findViewById(R.id.movieDetailImageView);
-        titleTextView = (TextView)findViewById(R.id.movieDetailTitleTextView);
+        posterImageView = (ImageView) findViewById(R.id.movieDetailImageView);
+        titleTextView = (TextView) findViewById(R.id.movieDetailTitleTextView);
         releaseDateTextView = (TextView) findViewById(R.id.movieDetailReleaseDateTextView);
-        synopsisTextView = (TextView)findViewById(R.id.movieDetailSynopsisTextView);
+        ratingTextView = (TextView) findViewById(R.id.movieDetailRatingTextView);
+        synopsisTextView = (TextView) findViewById(R.id.movieDetailSynopsisTextView);
 
         Intent intent = getIntent();
         movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
 
         Log.d(LOG_TAG, "*** MovieParam: " + movieIdParam);
-
-        synopsisTextView.setText("My Movie Synopsis");
-
     }
 
     @Override
@@ -52,6 +55,17 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onResume();
 
         MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+
+        NumberFormat ratingFormat = NumberFormat.getInstance();
+        ratingFormat.setMaximumFractionDigits(1);
+
+        DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
+
+
+        titleTextView.setText(movieInfo.getTitle());
+        releaseDateTextView.setText(String.format(getString(R.string.release_date_text), dateFormat.format(movieInfo.getReleaseDate())));
+        ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
+        synopsisTextView.setText(movieInfo.getSynopsis());
 
         Picasso.with(this).load(movieInfo.getPosterURL()).into(posterImageView);
     }
