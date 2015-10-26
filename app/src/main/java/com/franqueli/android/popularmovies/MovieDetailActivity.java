@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,4 +67,21 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Picasso.with(this).load(movieInfo.getPosterURL()).into(posterImageView);
     }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        movieIdParam = savedInstanceState.getLong(MOVIE_ID_PARAM, -1);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(MOVIE_ID_PARAM, movieIdParam);
+    }
+
 }

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MovieInfo selectedMovie = MovieInfo.findById(MovieInfo.class, id);
 
                 if (selectedMovie != null) {
-                    Toast.makeText(MainActivity.this, "Clicked item: " + selectedMovie.getTitle(), LENGTH_SHORT).show();
+                    Log.d(LOG_TAG,"Clicked item: " + selectedMovie.getTitle());
 
                     Intent showMovieDetailIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
                     showMovieDetailIntent.putExtra(MovieDetailActivity.MOVIE_ID_PARAM, id);
