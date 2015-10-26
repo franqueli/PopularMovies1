@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.selectedSortIndex = preferences.getInt(SELECTED_SORT_PREF, 0);
 
         // Pass the selected Sort Type to the adaptor
-        movieInfoAdapter = new MovieInfoAdapter(this, SortOptionsEnum.Popularity);
+        movieInfoAdapter = new MovieInfoAdapter(this, SORT_OPTIONS[selectedSortIndex]);
         movieGridView = (GridView) findViewById(R.id.gridview);
         movieGridView.setStretchMode(GridView.NO_STRETCH);
         movieGridView.setAdapter(movieInfoAdapter);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MovieInfo selectedMovie = MovieInfo.findById(MovieInfo.class, id);
 
                 if (selectedMovie != null) {
-                    Log.d(LOG_TAG,"Clicked item: " + selectedMovie.getTitle());
+                    Log.d(LOG_TAG, "Clicked item: " + selectedMovie.getTitle());
 
                     Intent showMovieDetailIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
                     showMovieDetailIntent.putExtra(MovieDetailActivity.MOVIE_ID_PARAM, id);
@@ -101,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onDestroy();
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        int position = movieGridView.getFirstVisiblePosition();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -116,28 +124,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sortSpinner.setAdapter(sortOptionsAdaptor);
         sortSpinner.setOnItemSelectedListener(this);
 
+        sortSpinner.setSelection(selectedSortIndex);
+
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sort) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[position]);
-        this.movieInfoAdapter.setSortBy(SORT_OPTIONS[position]);
+        this.selectedSortIndex = position;
+        Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[selectedSortIndex]);
+        this.movieInfoAdapter.setSortBy(SORT_OPTIONS[selectedSortIndex]);
     }
 
     @Override
