@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static final String LAST_SYNCED_PREF = "last_synced";
     public static final String SELECTED_SORT_PREF = "sort_selected";
+    public static final String GRID_POSITION_PARAM = "GRIDVIEW_POSITION";
 
     private static final SortOptionsEnum[] SORT_OPTIONS = new SortOptionsEnum[]{SortOptionsEnum.Popularity, SortOptionsEnum.Rating};
 
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         this.preferences = getSharedPreferences("Sync", MODE_PRIVATE);
-
         this.selectedSortIndex = preferences.getInt(SELECTED_SORT_PREF, 0);
 
         // Pass the selected Sort Type to the adaptor
@@ -85,6 +85,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         syncMovieMetadata();
+        restoreScrollPosition(savedInstanceState);
+    }
+
+    // FIXME: SavedInstanceState is null why?
+    private void restoreScrollPosition(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        int scrollPosition = savedInstanceState.getInt(GRID_POSITION_PARAM, -1);
+        if (scrollPosition >= 0) {
+            movieGridView.setSelection(scrollPosition);
+        }
     }
 
     @Override
@@ -107,7 +120,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onSaveInstanceState(outState);
 
         int position = movieGridView.getFirstVisiblePosition();
+        outState.putInt(GRID_POSITION_PARAM, position);
     }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        restoreScrollPosition(savedInstanceState);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

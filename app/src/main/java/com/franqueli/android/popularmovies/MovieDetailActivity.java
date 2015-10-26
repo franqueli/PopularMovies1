@@ -70,6 +70,14 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(MOVIE_ID_PARAM, movieIdParam);
+    }
+
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
@@ -77,11 +85,5 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putLong(MOVIE_ID_PARAM, movieIdParam);
-    }
 
 }
