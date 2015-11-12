@@ -15,7 +15,8 @@
         android:layout_alignParentTop="true"
         android:minHeight="@dimen/movie_poster_height"
         android:minWidth="@dimen/movie_poster_width"
-        android:src="@drawable/straight_outta_compton" />
+        android:src="@drawable/straight_outta_compton"
+        android:layout_alignParentBottom="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,7 +25,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="false"
         android:layout_toEndOf="@id/movieDetailImageView"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/movieDetailImageView">
 
         <TextView
             android:id="@+id/movieDetailTitleTextView"
@@ -50,19 +53,15 @@
             android:text="New Text"
             android:layout_marginStart="10dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="@style/MovieSynopsisStyle"
+            android:text="Large Text"
+            android:layout_marginStart="10dp"
+            android:id="@+id/movieDetailSynopsisTextView"/>
+
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/MovieSynopsisStyle"
-        android:text="Large Text"
-        android:id="@+id/movieDetailSynopsisTextView"
-        android:layout_below="@+id/movieDetailImageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/linearLayout"
-        android:layout_alignEnd="@+id/linearLayout"
-        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>
