@@ -1,6 +1,5 @@
 package com.franqueli.android.popularmovies.model;
 
-import android.media.Image;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
@@ -12,7 +11,7 @@ import java.util.Date;
  * <p/>
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
-public class MovieInfo extends SugarRecord<MovieInfo> {
+public class MovieInfo extends SugarRecord {
     private String title;
     private String synopsis;
     private float rating;
@@ -67,6 +66,6 @@ public class MovieInfo extends SugarRecord<MovieInfo> {
 
     @Override
     public String toString() {
-        return "ID: " + id + " Popularity: " + popularity + " Title: " + title  + " PosterPath: " + posterPath;
+        return "ID: " + getId() + " Popularity: " + popularity + " Title: " + title  + " PosterPath: " + posterPath;
     }
 }

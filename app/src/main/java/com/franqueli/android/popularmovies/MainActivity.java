@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -157,7 +158,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectedSortIndex = position;
         Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[selectedSortIndex]);
-        this.movieInfoAdapter.setSortBy(SORT_OPTIONS[selectedSortIndex]);
+
+        syncMovieMetadata();
     }
 
     @Override
@@ -168,26 +170,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void syncMovieMetadata() {
-        long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
-
-        Date lastSyncedTime = lastSynced > 0 ? new Date(lastSynced) : null;
-
-        long fifteenMinutesAgoInMillis = System.currentTimeMillis() - (15 * 60 * 1000);
-        if (lastSyncedTime == null || lastSyncedTime.before(new Date(fifteenMinutesAgoInMillis))) {
-            Log.d(LOG_TAG, "**** Syncing: " + lastSynced);
+//        long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
+//
+//        Date lastSyncedTime = lastSynced > 0 ? new Date(lastSynced) : null;
+//
+//        long fifteenMinutesAgoInMillis = System.currentTimeMillis() - (15 * 60 * 1000);
+//        if (lastSyncedTime == null || lastSyncedTime.before(new Date(fifteenMinutesAgoInMillis))) {
+//            Log.d(LOG_TAG, "**** Syncing: " + lastSynced);
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 // fetch data
                 DownloadMovieInfoTask movieInfoTask = new DownloadMovieInfoTask();
-                movieInfoTask.execute(getString(R.string.moviedb_api_key));
+                movieInfoTask.execute(SORT_OPTIONS[this.selectedSortIndex]);
             } else {
                 // TODO-fm: Instead of displaying a toast message. Display a message in the main view. Along with a retry.
                 Toast.makeText(MainActivity.this, "No network available", LENGTH_SHORT).show();
             }
-        } else {
-            Log.d(LOG_TAG, "**** Last Synced: " + lastSynced);
-        }
+//        } else {
+//            Log.d(LOG_TAG, "**** Last Synced: " + lastSynced);
+//        }
     }
 
 
@@ -197,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * <p/>
      * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
      */
-    class DownloadMovieInfoTask extends AsyncTask<String, Void, String> {
+    class DownloadMovieInfoTask extends AsyncTask<SortOptionsEnum, Void, String> {
         private String LOG_TAG = DownloadMovieInfoTask.class.getSimpleName();
         private SimpleDateFormat movieInfoReleaseDateFormat;
 
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(SortOptionsEnum... params) {
             String result = null;
             try {
                 result = downloadMovieInfo(params[0]);
@@ -221,11 +223,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return result;
         }
 
-        private String downloadMovieInfo(String apiKey) throws IOException {
+        private String downloadMovieInfo(SortOptionsEnum sortOption) throws IOException {
+            String sortParam ;
+            switch (sortOption) {
+                case Rating:
+                    sortParam = "vote_average.desc";
+                    break;
+                case Popularity:
+                default:
+                    sortParam = "popularity.desc";
+                    break;
+            }
+
             String movieInfo;
             InputStream is = null;
             try {
-                String urlString = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=" + apiKey;               // FIXME: Create utility class for moviedb urls
+                String urlString = "http://api.themoviedb.org/3/discover/movie?sort_by=" + sortParam + "&api_key=" + getString(R.string.moviedb_api_key);               // FIXME: Create utility class for moviedb urls
                 URL popularMoviesURL = new URL(urlString);
 
                 HttpURLConnection conn = (HttpURLConnection) popularMoviesURL.openConnection();
@@ -330,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             while (reader.hasNext()) {
 
                 String title = null;
-                String synonsis = null;
+                String synopsis = null;
                 double rating = 0.0;
                 double popularity = 0.0;
                 String posterPath = null;
@@ -339,10 +352,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 reader.beginObject();
                 while (reader.hasNext()) {
                     String name = reader.nextName();
+
+                    // Skip all null values
+                    if (reader.peek() == JsonToken.NULL) {
+                        reader.skipValue();
+                        continue;
+                    }
+
                     if (name.equals("original_title")) {
                         title = reader.nextString();
                     } else if (name.equals("overview")) {
-                        synonsis = reader.nextString();
+                        synopsis = reader.nextString();
                     } else if (name.equals("vote_average")) {
                         rating = reader.nextDouble();
                     } else if (name.equals("poster_path")) {
@@ -358,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 reader.endObject();
 
                 // We've retrieved all the properties we need from the json. Now lets save it as an object
-                MovieInfo currMovieInfo = new MovieInfo(title, synonsis, posterPath, (float) rating, (float) popularity, releaseDate);
+                MovieInfo currMovieInfo = new MovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate);
                 currMovieInfo.save();
                 movieInfoList.add(currMovieInfo);
             }
