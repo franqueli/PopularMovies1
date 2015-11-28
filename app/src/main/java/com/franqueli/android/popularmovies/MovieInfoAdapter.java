@@ -80,7 +80,12 @@ public class MovieInfoAdapter extends BaseAdapter {
             posterView.setAdjustViewBounds(true);
         }
 
-        Picasso.with(posterView.getContext()).load(movieInfoList.get(position).getPosterURL()).into(posterView);
+        String posterURL = movieInfoList.get(position).getPosterURL();
+        if (posterURL == null) {
+            posterView.setImageDrawable(context.getResources().getDrawable(R.drawable.movie_place_holder));
+        } else {
+            Picasso.with(posterView.getContext()).load(movieInfoList.get(position).getPosterURL()).into(posterView);
+        }
 
         return posterView;
     }

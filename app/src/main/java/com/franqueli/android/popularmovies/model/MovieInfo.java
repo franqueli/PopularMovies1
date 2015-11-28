@@ -60,7 +60,12 @@ public class MovieInfo extends SugarRecord {
 
     @Ignore
     public String getPosterURL() {
-        return "http://image.tmdb.org/t/p/" + "w185" + posterPath;              // TODO-fm: May want to get the appropriate size based on the device.
+        String posterURL = null;
+        if (posterPath != null) {
+            posterURL = "http://image.tmdb.org/t/p/" + "w185" + posterPath;              // TODO-fm: May want to get the appropriate size based on the device.
+        }
+
+        return posterURL;
     }
 
 
