@@ -65,7 +65,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
         synopsisTextView.setText(movieInfo.getSynopsis());
 
-        Picasso.with(this).load(movieInfo.getPosterURL()).into(posterImageView);
+        String posterURL = movieInfo.getPosterURL();
+        if (posterURL == null) {
+            posterImageView.setImageDrawable(getResources().getDrawable(R.drawable.movie_place_holder));
+        } else {
+            Picasso.with(this).load(posterURL).into(posterImageView);
+        }
     }
 
 
