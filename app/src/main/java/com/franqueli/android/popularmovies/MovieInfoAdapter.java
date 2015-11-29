@@ -43,7 +43,10 @@ public class MovieInfoAdapter extends BaseAdapter {
                 break;
         }
 
-        movieInfoList = MovieInfo.find(MovieInfo.class, "", null, "", orderBy, "");
+        // TODO : Don't order in query. The order of the movies should be determined by the query
+//        movieInfoList = MovieInfo.find(MovieInfo.class, "", null, "", orderBy, "");
+        movieInfoList = MovieInfo.listAll(MovieInfo.class);
+//        System.out.println("*** Movies: " + movieInfoList);
     }
 
     public void setSortBy(SortOptionsEnum sortBy) {

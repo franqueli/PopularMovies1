@@ -61,7 +61,13 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
         titleTextView.setText(movieInfo.getTitle());
-        releaseDateTextView.setText(String.format(getString(R.string.release_date_text), dateFormat.format(movieInfo.getReleaseDate())));
+
+        String releaseDateText = "";
+        if (movieInfo.getReleaseDate() != null) {
+            releaseDateText = String.format(getString(R.string.release_date_text), dateFormat.format(movieInfo.getReleaseDate()));
+        }
+        releaseDateTextView.setText(releaseDateText);
+
         ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
         synopsisTextView.setText(movieInfo.getSynopsis());
 

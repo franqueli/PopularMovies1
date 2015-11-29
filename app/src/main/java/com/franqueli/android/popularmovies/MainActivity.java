@@ -146,9 +146,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sortOptionsAdaptor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         sortSpinner.setAdapter(sortOptionsAdaptor);
+        sortSpinner.setSelection(selectedSortIndex, false);
         sortSpinner.setOnItemSelectedListener(this);
-
-        sortSpinner.setSelection(selectedSortIndex);
 
         return true;
     }
@@ -158,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectedSortIndex = position;
         Log.d(LOG_TAG, "Selected Item: " + SORT_OPTIONS[selectedSortIndex]);
+
+        // We're changing sort. Lets clear our the lastsynced time so the data is pulled from the server again.
+        SharedPreferences.Editor editor = MainActivity.this.preferences.edit();
+        editor.remove(LAST_SYNCED_PREF);
+        editor.apply();
 
         syncMovieMetadata();
     }
@@ -170,13 +174,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void syncMovieMetadata() {
-//        long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
-//
-//        Date lastSyncedTime = lastSynced > 0 ? new Date(lastSynced) : null;
-//
-//        long fifteenMinutesAgoInMillis = System.currentTimeMillis() - (15 * 60 * 1000);
-//        if (lastSyncedTime == null || lastSyncedTime.before(new Date(fifteenMinutesAgoInMillis))) {
-//            Log.d(LOG_TAG, "**** Syncing: " + lastSynced);
+        long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
+
+        Date lastSyncedTime = lastSynced > 0 ? new Date(lastSynced) : null;
+
+        long fifteenMinutesAgoInMillis = System.currentTimeMillis() - (15 * 60 * 1000);
+        if (lastSyncedTime == null || lastSyncedTime.before(new Date(fifteenMinutesAgoInMillis))) {
+            Log.d(LOG_TAG, "**** Syncing: " + lastSynced);
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
@@ -187,9 +191,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 // TODO-fm: Instead of displaying a toast message. Display a message in the main view. Along with a retry.
                 Toast.makeText(MainActivity.this, "No network available", LENGTH_SHORT).show();
             }
-//        } else {
-//            Log.d(LOG_TAG, "**** Last Synced: " + lastSynced);
-//        }
+        } else {
+            Log.d(LOG_TAG, "**** Last Synced: " + lastSynced);
+        }
     }
 
 
@@ -368,7 +372,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     } else if (name.equals("poster_path")) {
                         posterPath = reader.nextString();
                     } else if (name.equals("release_date")) {
-                        releaseDate = this.movieInfoReleaseDateFormat.parse(reader.nextString());
+                        try {
+                            releaseDate = this.movieInfoReleaseDateFormat.parse(reader.nextString());
+                        } catch (ParseException pe) {
+                            releaseDate = null;
+                        }
                     } else if (name.equals("popularity")) {
                         popularity = reader.nextDouble();
                     } else {
