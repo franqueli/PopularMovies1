@@ -1,68 +1,88 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.franqueli.android.popularmovies.MovieDetailActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.franqueli.android.popularmovies.MovieDetailActivity">
-
-    <ImageView
-        android:id="@+id/movieDetailImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:minHeight="@dimen/movie_poster_height"
-        android:minWidth="@dimen/movie_poster_width"
-        android:src="@drawable/straight_outta_compton" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="false"
-        android:layout_toEndOf="@id/movieDetailImageView"
-        android:id="@+id/linearLayout">
-
-        <TextView
-            android:id="@+id/movieDetailTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New Text"
-            android:layout_marginStart="10dp" />
-
-        <TextView
-            android:id="@+id/movieDetailReleaseDateTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New Text"
-            android:layout_marginStart="10dp" />
-
-        <TextView
-            android:id="@+id/movieDetailRatingTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="New Text"
-            android:layout_marginStart="10dp" />
-
-    </LinearLayout>
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/MovieSynopsisStyle"
-        android:text="Large Text"
-        android:id="@+id/movieDetailSynopsisTextView"
-        android:layout_below="@+id/movieDetailImageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/linearLayout"
-        android:layout_alignEnd="@+id/linearLayout"
-        android:layout_alignParentBottom="true" />
+        android:minHeight="80dp"
+        android:background="@color/green_background_color"
+        android:textColor="@android:color/white"
+        android:textAppearance="@style/MovieDetailTitleStyle"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="Movie Title"/>
 
-</RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        >
+
+        <ImageView
+            android:id="@+id/movieDetailImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:minHeight="@dimen/movie_poster_height"
+            android:minWidth="@dimen/movie_poster_width"
+            android:src="@drawable/straight_outta_compton" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="false"
+            android:layout_toEndOf="@id/movieDetailImageView"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/movieDetailTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="New Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/movieDetailReleaseDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="New Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/movieDetailRatingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="New Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/movieDetailSynopsisTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/linearLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/linearLayout"
+            android:layout_below="@+id/movieDetailImageView"
+            android:text="Large Text"
+            android:textAppearance="@style/MovieSynopsisStyle" />
+
+
+    </RelativeLayout>
+</LinearLayout>

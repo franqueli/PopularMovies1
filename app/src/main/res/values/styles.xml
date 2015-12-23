@@ -11,5 +11,11 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="MovieDetailTitleStyle">
+        <item name="android:typeface">normal</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

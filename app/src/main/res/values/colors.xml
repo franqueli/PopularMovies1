@@ -2,4 +2,5 @@
 <resources>
     <item name="background_color" type="color">#FF000000</item>
     <item name="light_text_color" type="color">#FFFFFFFF</item>
+    <item name="green_background_color" type="color">#25bc87</item>
 </resources>
