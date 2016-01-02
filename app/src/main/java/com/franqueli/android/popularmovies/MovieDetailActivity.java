@@ -37,7 +37,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         posterImageView = (ImageView) findViewById(R.id.movieDetailImageView);
-        titleTextView = (TextView) findViewById(R.id.movieDetailTitleTextView);
+//        titleTextView = (TextView) findViewById(R.id.movieDetailTitleTextView);
+        titleTextView = (TextView) findViewById(R.id.movieHeaderTitleTextView);
         releaseDateTextView = (TextView) findViewById(R.id.movieDetailReleaseDateTextView);
         ratingTextView = (TextView) findViewById(R.id.movieDetailRatingTextView);
         synopsisTextView = (TextView) findViewById(R.id.movieDetailSynopsisTextView);
