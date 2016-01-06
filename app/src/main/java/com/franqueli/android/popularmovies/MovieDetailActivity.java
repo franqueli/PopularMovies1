@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -37,7 +38,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         posterImageView = (ImageView) findViewById(R.id.movieDetailImageView);
-//        titleTextView = (TextView) findViewById(R.id.movieDetailTitleTextView);
         titleTextView = (TextView) findViewById(R.id.movieHeaderTitleTextView);
         releaseDateTextView = (TextView) findViewById(R.id.movieDetailReleaseDateTextView);
         ratingTextView = (TextView) findViewById(R.id.movieDetailRatingTextView);
@@ -58,14 +58,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         NumberFormat ratingFormat = NumberFormat.getInstance();
         ratingFormat.setMaximumFractionDigits(1);
 
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-
-
         titleTextView.setText(movieInfo.getTitle());
 
         String releaseDateText = "";
         if (movieInfo.getReleaseDate() != null) {
-            releaseDateText = String.format(getString(R.string.release_date_text), dateFormat.format(movieInfo.getReleaseDate()));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(movieInfo.getReleaseDate());
+
+            releaseDateText = String.format(getString(R.string.release_date_text), calendar.get(Calendar.YEAR));
         }
         releaseDateTextView.setText(releaseDateText);
 
