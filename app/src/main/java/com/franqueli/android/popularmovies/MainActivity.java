@@ -352,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 double popularity = 0.0;
                 String posterPath = null;
                 Date releaseDate = null;
+                int movieDBId = 0;
 
                 reader.beginObject();
                 while (reader.hasNext()) {
@@ -379,6 +380,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     } else if (name.equals("popularity")) {
                         popularity = reader.nextDouble();
+                    } else if (name.equals("id")) {
+                        movieDBId = reader.nextInt();
                     } else {
                         reader.skipValue();
                     }
@@ -386,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 reader.endObject();
 
                 // We've retrieved all the properties we need from the json. Now lets save it as an object
-                MovieInfo currMovieInfo = new MovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate);
+                MovieInfo currMovieInfo = new MovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate, movieDBId);
                 currMovieInfo.save();
                 movieInfoList.add(currMovieInfo);
             }

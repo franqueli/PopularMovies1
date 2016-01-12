@@ -12,6 +12,7 @@ import java.util.Date;
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
 public class MovieInfo extends SugarRecord {
+    private int movieDBId;
     private String title;
     private String synopsis;
     private float rating;
@@ -25,13 +26,14 @@ public class MovieInfo extends SugarRecord {
     }
 
 
-    public MovieInfo(String title, String synopsis, String posterPath, float rating, float popularity, Date releaseDate) {
+    public MovieInfo(String title, String synopsis, String posterPath, float rating, float popularity, Date releaseDate, int movieDBId) {
         this.title = title;
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
         this.popularity = popularity;
+        this.movieDBId = movieDBId;
     }
 
     public String getTitle() {
@@ -56,6 +58,10 @@ public class MovieInfo extends SugarRecord {
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public int getMovieDBId() {
+        return movieDBId;
     }
 
     @Ignore

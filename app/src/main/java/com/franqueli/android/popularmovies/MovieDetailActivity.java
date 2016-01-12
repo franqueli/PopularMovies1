@@ -1,6 +1,7 @@
 package com.franqueli.android.popularmovies;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.franqueli.android.popularmovies.model.MovieInfo;
+import com.franqueli.android.popularmovies.model.TheMovieDBAPI;
 import com.orm.SugarRecord;
 import com.squareup.picasso.Picasso;
 
@@ -22,12 +24,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
 
+    private TheMovieDBAPI movieDBAPI;
+
+
     private ImageView posterImageView;
     private TextView titleTextView;
     private TextView releaseDateTextView;
     private TextView ratingTextView;
     private TextView synopsisTextView;
     private TextView runtimeTextView;
+
 
 
     private long movieIdParam;
@@ -56,6 +62,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onResume();
 
         MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+
+        movieDBAPI = new TheMovieDBAPI(getString(R.string.moviedb_api_key));
+
+        Log.d(LOG_TAG, "*** review url: " + movieDBAPI.getReviewURL(movieInfo.getMovieDBId() + ""));
 
         NumberFormat ratingFormat = NumberFormat.getInstance();
         ratingFormat.setMaximumFractionDigits(1);
@@ -101,6 +111,26 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
+    enum MovieDetailEnum {
+        Detail, Videos, Reviews;
+    }
+
+
+    class DownloadMovieDetailsTask extends AsyncTask<MovieDetailEnum, Void, Void> {
+
+        private MovieDetailEnum currentRequestType;
+
+
+        @Override
+        protected Void doInBackground(MovieDetailEnum... params) {
+            return null;
+        }
+
+
+
+
+
+    }
 
 
 
