@@ -27,6 +27,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView releaseDateTextView;
     private TextView ratingTextView;
     private TextView synopsisTextView;
+    private TextView runtimeTextView;
 
 
     private long movieIdParam;
@@ -42,6 +43,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         releaseDateTextView = (TextView) findViewById(R.id.movieDetailReleaseDateTextView);
         ratingTextView = (TextView) findViewById(R.id.movieDetailRatingTextView);
         synopsisTextView = (TextView) findViewById(R.id.movieDetailSynopsisTextView);
+        runtimeTextView = (TextView) findViewById(R.id.movieDetailRuntimeTextView);
 
         Intent intent = getIntent();
         movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
@@ -69,6 +71,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         releaseDateTextView.setText(releaseDateText);
 
+        runtimeTextView.setText("");                           // FIXME: Need to get runtime information from moviedb api
+
         ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
         synopsisTextView.setText(movieInfo.getSynopsis());
 
@@ -94,8 +98,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         movieIdParam = savedInstanceState.getLong(MOVIE_ID_PARAM, -1);
-
     }
+
+
+
 
 
 }
