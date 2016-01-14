@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,7 +40,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView ratingTextView;
     private TextView synopsisTextView;
     private TextView runtimeTextView;
-
+    private Button favoriteButtonView;
 
 
     private long movieIdParam;
@@ -55,6 +57,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         ratingTextView = (TextView) findViewById(R.id.movieDetailRatingTextView);
         synopsisTextView = (TextView) findViewById(R.id.movieDetailSynopsisTextView);
         runtimeTextView = (TextView) findViewById(R.id.movieDetailRuntimeTextView);
+        favoriteButtonView = (Button) findViewById(R.id.movieDetailFavoriteButton);
 
         Intent intent = getIntent();
         movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
@@ -92,6 +95,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
         synopsisTextView.setText(movieInfo.getSynopsis());
 
+        favoriteButtonView.setText(movieInfo.isFavorite() ? "Unfavorite" : "Mark as favorite");
+
         String posterURL = movieInfo.getPosterURL();
         if (posterURL == null) {
             posterImageView.setImageDrawable(getResources().getDrawable(R.drawable.movie_place_holder));
@@ -118,6 +123,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         movieIdParam = savedInstanceState.getLong(MOVIE_ID_PARAM, -1);
+    }
+
+
+    public void toggleFavorite (View view) {
+        MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+        movieInfo.setFavorite(!movieInfo.isFavorite());
+
+        movieInfo.save();
+
+        favoriteButtonView.setText(movieInfo.isFavorite() ? "Unfavorite" : "Mark as favorite");
     }
 
 

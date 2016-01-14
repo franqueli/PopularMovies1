@@ -1,10 +1,13 @@
 package com.franqueli.android.popularmovies.model;
 
 
+import android.graphics.Movie;
+
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Franqueli Mendez on 9/4/15.
@@ -12,6 +15,7 @@ import java.util.Date;
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
 public class MovieInfo extends SugarRecord {
+    private boolean favorite;
     private int movieDBId;
     private String title;
     private String synopsis;
@@ -64,6 +68,14 @@ public class MovieInfo extends SugarRecord {
         return movieDBId;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     @Ignore
     public String getPosterURL() {
         String posterURL = null;
@@ -74,6 +86,10 @@ public class MovieInfo extends SugarRecord {
         return posterURL;
     }
 
+    @Ignore
+    public List<MovieInfo> favoriteMovies() {
+        return MovieInfo.find(MovieInfo.class,"favorite = ?", 1+"");
+    }
 
     @Override
     public String toString() {
