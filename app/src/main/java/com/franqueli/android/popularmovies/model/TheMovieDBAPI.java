@@ -20,6 +20,7 @@ public class TheMovieDBAPI {
 
     private String apiKey;
     private static final String movieDBBaseURL = "http://api.themoviedb.org/3%1$s?api_key=%2$s";
+    private static final String movieURLSegment = "/movie/%1$s";
     private static final String reviewURLSegment = "/movie/%1$s/reviews";
     private static final String videoURLSegment = "/movie/%1$s/videos";
     private static final String movieDetailURLSegment = "/movie/%1$s/reviews";
@@ -43,6 +44,14 @@ public class TheMovieDBAPI {
         return String.format(movieDBBaseURL, reviewPath, apiKey);
     }
 
+    public String getFullMovieDetailsURL(String movieID) {
+        String moviePath = String.format(movieURLSegment, movieID);
+        String movieDetailsURL = String.format(movieDBBaseURL, moviePath, apiKey);
+        movieDetailsURL = movieDetailsURL + "&append_to_response=videos,reviews";
+
+        return movieDetailsURL;
+    }
+
 
     // TODO : Add the http connection in this class. All you need to do is call this from the doInBackground method
 
@@ -57,6 +66,10 @@ public class TheMovieDBAPI {
 
     public String requestDetails(String movieID) {
         return requestPayloadString(getDetailsURL(movieID));
+    }
+
+    public String requestAllDetails(String movieID) {
+        return requestPayloadString(getFullMovieDetailsURL(movieID));
     }
 
     private String requestPayloadString(String urlStr) {

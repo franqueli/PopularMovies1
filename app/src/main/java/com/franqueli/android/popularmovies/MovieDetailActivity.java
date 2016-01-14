@@ -70,7 +70,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         movieDBAPI = new TheMovieDBAPI(getString(R.string.moviedb_api_key));
 
-        Log.d(LOG_TAG, "*** review url: " + movieDBAPI.getReviewURL(movieInfo.getMovieDBId() + ""));
+        Log.d(LOG_TAG, "*** MovieDetails url: " + movieDBAPI.getFullMovieDetailsURL(movieInfo.getMovieDBId() + ""));
 
 
         NumberFormat ratingFormat = NumberFormat.getInstance();
@@ -125,7 +125,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         private MovieDetailEnum currentRequestType;
 
-
         @Override
         protected Void doInBackground(MovieDetailEnum... params) {
             String url;
@@ -141,17 +140,9 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
-            Log.d(LOG_TAG, "*** reviews: " + movieDBAPI.requestReviewJSON(movieInfo.getMovieDBId() + ""));
+            Log.d(LOG_TAG, "*** Moview: " + movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
 
             return null;
         }
-
-
-
-
-
     }
-
-
-
 }
