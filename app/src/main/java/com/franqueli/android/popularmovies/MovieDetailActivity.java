@@ -20,6 +20,11 @@ import java.util.Calendar;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    enum MovieDetailEnum {
+        Detail, Videos, Reviews;
+    }
+
+
     public static final String MOVIE_ID_PARAM = "com.franqueli.android.popularmovies.MOVIE_ID";
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
@@ -67,6 +72,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG, "*** review url: " + movieDBAPI.getReviewURL(movieInfo.getMovieDBId() + ""));
 
+
         NumberFormat ratingFormat = NumberFormat.getInstance();
         ratingFormat.setMaximumFractionDigits(1);
 
@@ -92,6 +98,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             Picasso.with(this).load(posterURL).into(posterImageView);
         }
+
+        DownloadMovieDetailsTask movieInfoTask = new DownloadMovieDetailsTask();
+        movieInfoTask.execute(MovieDetailEnum.Detail);
+
     }
 
 
@@ -111,11 +121,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
-    enum MovieDetailEnum {
-        Detail, Videos, Reviews;
-    }
-
-
     class DownloadMovieDetailsTask extends AsyncTask<MovieDetailEnum, Void, Void> {
 
         private MovieDetailEnum currentRequestType;
@@ -123,6 +128,21 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(MovieDetailEnum... params) {
+            String url;
+            switch(params[0]) {
+                case Detail:
+//                    url = movieDBAPI.
+                    break;
+                case Videos:
+                    break;
+                case Reviews:
+                    break;
+            }
+
+            MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+
+            Log.d(LOG_TAG, "*** reviews: " + movieDBAPI.requestReviewJSON(movieInfo.getMovieDBId() + ""));
+
             return null;
         }
 
