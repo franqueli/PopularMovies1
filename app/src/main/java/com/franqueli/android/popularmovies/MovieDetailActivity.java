@@ -15,6 +15,7 @@ import com.franqueli.android.popularmovies.model.TheMovieDBAPI;
 import com.orm.SugarRecord;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -155,7 +156,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
-            Log.d(LOG_TAG, "*** Moview: " + movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
+
+            try {
+                movieInfo.updateWithJSON(movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             return null;
         }
