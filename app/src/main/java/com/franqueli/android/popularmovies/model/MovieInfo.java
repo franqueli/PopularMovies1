@@ -1,17 +1,15 @@
 package com.franqueli.android.popularmovies.model;
 
 
-import android.graphics.Movie;
 import android.util.JsonReader;
+import android.util.JsonToken;
+import android.util.Log;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
-import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -114,8 +112,17 @@ public class MovieInfo extends SugarRecord {
                 String name = reader.nextName();
                 switch (name) {
                     case "videos" :
-                        this.processTrailers(reader);
-                        reader.skipValue();               // FIXME : Remove this call here until processTrailers is implemented
+                        reader.beginObject();
+
+                        while (reader.hasNext()) {
+                            if (reader.nextName().equals("results")) {
+                                System.out.println("**** Videos " + this.processTrailers(reader));
+                            } else {
+                                reader.skipValue();
+                            }
+                        }
+
+                        reader.endObject();
                         break;
                     case "reviews" :
                         this.processReviews(reader);
@@ -123,7 +130,7 @@ public class MovieInfo extends SugarRecord {
                         break;
                     default:
                         reader.skipValue();
-
+                        break;
                 }
             }
             reader.endObject();
@@ -134,82 +141,115 @@ public class MovieInfo extends SugarRecord {
 
     }
 
+/*
+    "videos": {
+        "results": [
+        {
+            "id": "5693d51bc3a3687b6b000145",
+                "iso_639_1": "en",
+                "key": "EIELwayIIT4",
+                "name": "The Revenant Official Trailer 1 2015 HD",
+                "site": "YouTube",
+                "size": 1080,
+                "type": "Trailer"
+        }
+        ]
+    },
+    */
+
+    private List<Video> processTrailers(JsonReader reader) throws IOException {
+        ArrayList<Video> videoInfo = new ArrayList<>();
+        Log.d("MovieInfo","***** ProcessTrailers *****");
+
+        reader.beginArray();
+
+        while (reader.hasNext()) {
+            videoInfo.add(readVideo(reader));
+        }
+
+        reader.endArray();
+
+        return videoInfo;
+    }
 
 /*
-        private List<MovieInfo> processPopularMovieList(JsonReader reader) throws IOException, ParseException {
-            List<MovieInfo> movieInfoList = new ArrayList<>();
-
-            // Clear out all the old popular movies
-            MovieInfo.deleteAll(MovieInfo.class);
-
-            reader.beginArray();
-            while (reader.hasNext()) {
-
-                String title = null;
-                String synopsis = null;
-                double rating = 0.0;
-                double popularity = 0.0;
-                String posterPath = null;
-                Date releaseDate = null;
-                int movieDBId = 0;
-
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    String name = reader.nextName();
-
-                    // Skip all null values
-                    if (reader.peek() == JsonToken.NULL) {
-                        reader.skipValue();
-                        continue;
-                    }
-
-                    if (name.equals("original_title")) {
-                        title = reader.nextString();
-                    } else if (name.equals("overview")) {
-                        synopsis = reader.nextString();
-                    } else if (name.equals("vote_average")) {
-                        rating = reader.nextDouble();
-                    } else if (name.equals("poster_path")) {
-                        posterPath = reader.nextString();
-                    } else if (name.equals("release_date")) {
-                        try {
-                            releaseDate = this.movieInfoReleaseDateFormat.parse(reader.nextString());
-                        } catch (ParseException pe) {
-                            releaseDate = null;
-                        }
-                    } else if (name.equals("popularity")) {
-                        popularity = reader.nextDouble();
-                    } else if (name.equals("id")) {
-                        movieDBId = reader.nextInt();
-                    } else {
-                        reader.skipValue();
-                    }
-                }
-                reader.endObject();
-
-                // We've retrieved all the properties we need from the json. Now lets save it as an object
-                MovieInfo currMovieInfo = new MovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate, movieDBId);
-                currMovieInfo.save();
-                movieInfoList.add(currMovieInfo);
-            }
-            reader.endArray();
-
-            SharedPreferences.Editor editor = MainActivity.this.preferences.edit();
-            editor.putLong(LAST_SYNCED_PREF, System.currentTimeMillis());
-            editor.apply();
-
-            return movieInfoList;
-        }
+    {
+        "id": "5693d51bc3a3687b6b000145",
+            "iso_639_1": "en",
+            "key": "EIELwayIIT4",
+            "name": "The Revenant Official Trailer 1 2015 HD",
+            "site": "YouTube",
+            "size": 1080,
+            "type": "Trailer"
     }
-
-
 */
+    private Video readVideo(JsonReader reader) throws IOException {
+        String name = "";
+        String type = "";
+        String id = "";
+        String iso = "";
+        String site = "";
+        String key = "";
+        int size = -1;
 
+        reader.beginObject();
 
-    private List<HashMap> processTrailers(JsonReader reader) {
-        System.out.println("***** ProcessTrailers *****");
-        return new ArrayList<>();
+        while (reader.hasNext()) {
+            String token = reader.nextName();
+
+            if (reader.peek() == JsonToken.NULL) {
+                reader.skipValue();
+                continue;
+            }
+
+            switch (token) {
+                case "id":
+                    id = reader.nextString();
+                    break;
+                case "iso_639_1":
+                    iso = reader.nextString();
+                    break;
+                case "key":
+                    key = reader.nextString();
+                    break;
+                case "name":
+                    name = reader.nextString();
+                    break;
+                case "site":
+                    site = reader.nextString();
+                    break;
+                case "type":
+                    type = reader.nextString();
+                    break;
+                case "size":
+                    size = reader.nextInt();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+
+        reader.endObject();
+
+        return new Video(id, name, site, type, key, size, iso);
     }
+
+/*
+    "reviews": {
+        "page": 1,
+                "results": [
+        {
+            "id": "568bbeaec3a3680e01007bb7",
+                "author": "rahuliam",
+                "content": "The Revenant, a ravishingly violent Western survival yarn from Alejandro González Iñárritu, has a healthy few, scattered like acorns across its two-and-a-half-hour canvas..... no matter how extended, the film’s tense story is under the director’s complete control...DiCaprio’s performance is an astonishing testament to his commitment to a role. cinematographer Emmanuel Lubezki done a great job..as a supporting actor tom hardy is brilliant..must watch...",
+                "url": "http://j.mp/1O8khtT"
+        }
+        ],
+        "total_pages": 1,
+                "total_results": 1
+    }
+  */
 
     private List<HashMap> processReviews(JsonReader reader) {
         System.out.println("***** ProcessReviews *****");
