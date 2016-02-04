@@ -125,8 +125,14 @@ public class MovieInfo extends SugarRecord {
                         reader.endObject();
                         break;
                     case "reviews" :
-                        this.processReviews(reader);
-                        reader.skipValue();               // FIXME : Remove this call here until processReviews is implemented
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            if (reader.nextName().equals("results")) {
+                                System.out.println("***** Reviews " + this.processReviews(reader));
+                            } else {
+                                reader.skipValue();
+                            }
+                        }
                         break;
                     default:
                         reader.skipValue();
@@ -138,7 +144,6 @@ public class MovieInfo extends SugarRecord {
         } finally {
             reader.close();
         }
-
     }
 
 /*
@@ -235,24 +240,83 @@ public class MovieInfo extends SugarRecord {
         return new Video(id, name, site, type, key, size, iso);
     }
 
-/*
-    "reviews": {
-        "page": 1,
-                "results": [
-        {
-            "id": "568bbeaec3a3680e01007bb7",
-                "author": "rahuliam",
-                "content": "The Revenant, a ravishingly violent Western survival yarn from Alejandro González Iñárritu, has a healthy few, scattered like acorns across its two-and-a-half-hour canvas..... no matter how extended, the film’s tense story is under the director’s complete control...DiCaprio’s performance is an astonishing testament to his commitment to a role. cinematographer Emmanuel Lubezki done a great job..as a supporting actor tom hardy is brilliant..must watch...",
-                "url": "http://j.mp/1O8khtT"
-        }
-        ],
-        "total_pages": 1,
-                "total_results": 1
-    }
-  */
+//    "reviews": {
+//        "page": 1,
+//                "results": [
+//        {
+//            "id": "568bbeaec3a3680e01007bb7",
+//                "author": "rahuliam",
+//                "content": "The Revenant, a ravishingly violent Western survival yarn from Alejandro González Iñárritu, has a healthy few, scattered like acorns across its two-and-a-half-hour canvas..... no matter how extended, the film’s tense story is under the director’s complete control...DiCaprio’s performance is an astonishing testament to his commitment to a role. cinematographer Emmanuel Lubezki done a great job..as a supporting actor tom hardy is brilliant..must watch...",
+//                "url": "http://j.mp/1O8khtT"
+//        }
+//        ],
+//        "total_pages": 1,
+//                "total_results": 1
+//    }
 
-    private List<HashMap> processReviews(JsonReader reader) {
+    private List<Review> processReviews(JsonReader reader) throws IOException {
+        List<Review> reviews = new ArrayList<>();
         System.out.println("***** ProcessReviews *****");
-        return new ArrayList<>();
+
+        reader.beginArray();
+
+        while (reader.hasNext()) {
+            reviews.add(readReview(reader));
+        }
+
+        reader.endArray();
+
+        return reviews;
     }
+
+
+//    {
+//        "id": "568bbeaec3a3680e01007bb7",
+//            "author": "rahuliam",
+//            "content": "The Revenant, a ravishingly violent Western survival yarn from Alejandro González Iñárritu, has a healthy few, scattered like acorns across its two-and-a-half-hour canvas..... no matter how extended, the film’s tense story is under the director’s complete control...DiCaprio’s performance is an astonishing testament to his commitment to a role. cinematographer Emmanuel Lubezki done a great job..as a supporting actor tom hardy is brilliant..must watch...",
+//            "url": "http://j.mp/1O8khtT"
+//    }
+
+    private Review readReview(JsonReader reader) throws IOException {
+        String id = "";
+        String author = "";
+        String content = "";
+        String url = "";
+
+        reader.beginObject();
+
+        while (reader.hasNext()) {
+            String token = reader.nextName();
+
+            if (reader.peek() == JsonToken.NULL) {
+                reader.skipValue();
+                continue;
+            }
+
+            switch (token) {
+                case "id":
+                    id = reader.nextString();
+                    break;
+                case "author":
+                    author = reader.nextString();
+                    break;
+                case "content":
+                    content = reader.nextString();
+                    break;
+                case "url":
+                    url = reader.nextString();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+
+        reader.endObject();
+
+        return new Review(id, author, content, url);
+    }
+
+
+
 }
