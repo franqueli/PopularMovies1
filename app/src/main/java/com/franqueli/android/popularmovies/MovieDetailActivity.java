@@ -70,12 +70,17 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
-
         movieDBAPI = new TheMovieDBAPI(getString(R.string.moviedb_api_key));
 
-        Log.d(LOG_TAG, "*** MovieDetails url: " + movieDBAPI.getFullMovieDetailsURL(movieInfo.getMovieDBId() + ""));
+        updateView();
 
+        DownloadMovieDetailsTask movieInfoTask = new DownloadMovieDetailsTask();
+        movieInfoTask.execute(MovieDetailEnum.Detail);
+
+    }
+
+    private void updateView() {
+        MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
         NumberFormat ratingFormat = NumberFormat.getInstance();
         ratingFormat.setMaximumFractionDigits(1);
@@ -104,10 +109,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             Picasso.with(this).load(posterURL).into(posterImageView);
         }
-
-        DownloadMovieDetailsTask movieInfoTask = new DownloadMovieDetailsTask();
-        movieInfoTask.execute(MovieDetailEnum.Detail);
-
     }
 
 
@@ -143,19 +144,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(MovieDetailEnum... params) {
-            String url;
-            switch(params[0]) {
-                case Detail:
-//                    url = movieDBAPI.
-                    break;
-                case Videos:
-                    break;
-                case Reviews:
-                    break;
-            }
 
             MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
-
 
             try {
                 movieInfo.updateWithJSON(movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
@@ -164,6 +154,14 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
 
             return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            updateView();
         }
     }
 }
