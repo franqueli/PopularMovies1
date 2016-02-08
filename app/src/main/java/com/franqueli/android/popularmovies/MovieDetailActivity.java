@@ -91,7 +91,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         releaseDateTextView.setText(releaseDateText);
 
-        runtimeTextView.setText("");                           // FIXME: Need to get runtime information from moviedb api
+        runtimeTextView.setText(String.format(getString(R.string.runtime_text), movieInfo.getRuntime()));
 
         ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
         synopsisTextView.setText(movieInfo.getSynopsis());

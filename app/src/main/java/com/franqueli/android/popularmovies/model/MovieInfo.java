@@ -29,6 +29,7 @@ public class MovieInfo extends SugarRecord {
     private Date releaseDate;
     private String posterPath;
     private float popularity;
+    private int runtime;
 
     // Default constructor for SugarORM
     public MovieInfo() {
@@ -82,6 +83,10 @@ public class MovieInfo extends SugarRecord {
         this.favorite = favorite;
     }
 
+    public int getRuntime() {
+        return runtime;
+    }
+
     @Ignore
     public String getPosterURL() {
         String posterURL = null;
@@ -105,6 +110,8 @@ public class MovieInfo extends SugarRecord {
 
     public void updateWithJSON(String movieDetailsJSON) throws IOException {
         JsonReader reader = new JsonReader(new CharArrayReader(movieDetailsJSON.toCharArray()));
+
+        int runtime = 0;
 
         try {
             reader.beginObject();
@@ -134,6 +141,9 @@ public class MovieInfo extends SugarRecord {
                             }
                         }
                         break;
+                    case "runtime" :
+                        runtime = reader.nextInt();
+                        break;
                     default:
                         reader.skipValue();
                         break;
@@ -144,6 +154,10 @@ public class MovieInfo extends SugarRecord {
         } finally {
             reader.close();
         }
+
+        this.runtime = runtime;
+
+        this.save();
     }
 
 /*
