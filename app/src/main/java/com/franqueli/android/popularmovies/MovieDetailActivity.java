@@ -96,7 +96,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         releaseDateTextView.setText(releaseDateText);
 
-        runtimeTextView.setText(String.format(getString(R.string.runtime_text), movieInfo.getRuntime()));
+        int movieRuntime = movieInfo.getRuntime();
+        if (movieRuntime > 0) {
+            runtimeTextView.setVisibility(View.VISIBLE);
+            runtimeTextView.setText(String.format(getString(R.string.runtime_text), movieRuntime));
+        } else {
+            runtimeTextView.setVisibility(View.GONE);
+        }
 
         ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
         synopsisTextView.setText(movieInfo.getSynopsis());
