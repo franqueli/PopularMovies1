@@ -71,6 +71,14 @@
                 android:text="New Text"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mark as Favorite"
+                android:layout_marginStart="10dp"
+                android:onClick="toggleFavorite"
+                android:id="@+id/movieDetailFavoriteButton" />
+
             <TextView
                 android:id="@+id/movieDetailSynopsisTextView"
                 android:layout_width="match_parent"
