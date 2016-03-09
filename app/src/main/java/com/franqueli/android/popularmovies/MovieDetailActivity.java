@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,14 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.franqueli.android.popularmovies.model.MovieInfo;
-import com.franqueli.android.popularmovies.model.TheMovieDBAPI;
 import com.orm.SugarRecord;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MovieDetailActivity extends AppCompatActivity {
@@ -59,6 +57,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         synopsisTextView = (TextView) findViewById(R.id.movieDetailSynopsisTextView);
         runtimeTextView = (TextView) findViewById(R.id.movieDetailRuntimeTextView);
         favoriteButtonView = (Button) findViewById(R.id.movieDetailFavoriteButton);
+
+
+        synopsisTextView.setMovementMethod(new ScrollingMovementMethod());
 
         Intent intent = getIntent();
         movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
