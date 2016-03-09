@@ -11,6 +11,7 @@ import com.orm.dsl.Ignore;
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -188,6 +189,7 @@ public class MovieInfo extends SugarRecord {
 
         reader.endArray();
 
+        Log.d("MovieInfo: Videos", Arrays.toString(videoInfo.toArray()));
         return videoInfo;
     }
 
