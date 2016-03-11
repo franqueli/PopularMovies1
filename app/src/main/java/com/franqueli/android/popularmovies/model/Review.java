@@ -1,27 +1,34 @@
 package com.franqueli.android.popularmovies.model;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by Franqueli Mendez on 2/3/16.
  * <p/>
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
-public class Review {
+public class Review extends SugarRecord {
 
-    private String id;
+    private String myId;
     private String author;
     private String content;
     private String url;
 
+    // Default constructor for SugarORM
+    public Review() {
+
+    }
+
     public Review(String id, String author, String content, String url) {
-        this.id = id;
+        this.myId = id;
         this.author = author;
         this.content = content;
         this.url = url;
     }
 
 
-    public String getId() {
-        return id;
+    public String getMyId() {
+        return myId;
     }
 
     public String getAuthor() {

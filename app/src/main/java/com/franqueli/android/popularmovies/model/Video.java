@@ -1,5 +1,7 @@
 package com.franqueli.android.popularmovies.model;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by Franqueli Mendez on 1/29/16.
  * <p>
@@ -7,7 +9,7 @@ package com.franqueli.android.popularmovies.model;
  */
 /*
 {
-        "id": "5693d51bc3a3687b6b000145",
+        "myId": "5693d51bc3a3687b6b000145",
         "iso_639_1": "en",
         "key": "EIELwayIIT4",
         "name": "The Revenant Official Trailer 1 2015 HD",
@@ -16,8 +18,8 @@ package com.franqueli.android.popularmovies.model;
         "type": "Trailer"
         }
 */
-public class Video {
-    private String id;
+public class Video extends SugarRecord {
+    private String myId;
     private String iso;
     private String name;
     private String site;
@@ -25,8 +27,16 @@ public class Video {
     private String type;
     private String key;
 
-    public Video(String id, String name, String site, String type, String key, int size, String iso) {
-        this.id = id;
+    private MovieInfo movieInfo;
+
+    // Default constructor for SugarORM
+    public Video () {
+
+    }
+
+    public Video(MovieInfo movieInfo, String id, String name, String site, String type, String key, int size, String iso) {
+        this.movieInfo = movieInfo;
+        this.myId = id;
         this.iso = iso;
         this.name = name;
         this.site = site;
@@ -35,8 +45,8 @@ public class Video {
         this.type = type;
     }
 
-    public String getId() {
-        return id;
+    public String getMyId() {
+        return myId;
     }
 
     public String getIso() {

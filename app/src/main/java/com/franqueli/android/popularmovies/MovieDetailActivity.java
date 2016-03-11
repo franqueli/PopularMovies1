@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +43,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView runtimeTextView;
     private Button favoriteButtonView;
 
+    private RecyclerView recyclerView;
 
     private long movieIdParam;
 
@@ -57,6 +60,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         synopsisTextView = (TextView) findViewById(R.id.movieDetailSynopsisTextView);
         runtimeTextView = (TextView) findViewById(R.id.movieDetailRuntimeTextView);
         favoriteButtonView = (Button) findViewById(R.id.movieDetailFavoriteButton);
+        recyclerView = (RecyclerView) findViewById(R.id.movieDetailTrailerRecyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
         synopsisTextView.setMovementMethod(new ScrollingMovementMethod());
@@ -116,6 +122,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             Picasso.with(this).load(posterURL).into(posterImageView);
         }
+
+
+        // TODO-fm: should we be resetting this each time
+        recyclerView.setAdapter(new TrailerListAdapter(movieInfo));
     }
 
 

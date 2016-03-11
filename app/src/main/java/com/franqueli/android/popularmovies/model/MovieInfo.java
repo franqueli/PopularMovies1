@@ -12,6 +12,7 @@ import java.io.CharArrayReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,9 @@ public class MovieInfo extends SugarRecord {
     private String posterPath;
     private float popularity;
     private int runtime;
+
+    @Ignore
+    private List<Video> movieTrailers;
 
     // Default constructor for SugarORM
     public MovieInfo() {
@@ -100,7 +104,12 @@ public class MovieInfo extends SugarRecord {
 
     @Ignore
     public List<MovieInfo> favoriteMovies() {
-        return MovieInfo.find(MovieInfo.class,"favorite = ?", 1+"");
+        return MovieInfo.find(MovieInfo.class,"favorite = ?", 1 + "");
+    }
+
+    @Ignore
+    public List<Video> getMovieTrailers() {
+        return Video.find(Video.class, "movie_info = ?", getId() + "");
     }
 
     @Override
@@ -124,7 +133,8 @@ public class MovieInfo extends SugarRecord {
 
                         while (reader.hasNext()) {
                             if (reader.nextName().equals("results")) {
-                                System.out.println("**** Videos " + this.processTrailers(reader));
+                                this.movieTrailers = this.processTrailers(reader);
+                                System.out.println("**** Videos " + movieTrailers);
                             } else {
                                 reader.skipValue();
                             }
@@ -178,13 +188,18 @@ public class MovieInfo extends SugarRecord {
     */
 
     private List<Video> processTrailers(JsonReader reader) throws IOException {
+
         ArrayList<Video> videoInfo = new ArrayList<>();
         Log.d("MovieInfo","***** ProcessTrailers *****");
 
         reader.beginArray();
 
         while (reader.hasNext()) {
-            videoInfo.add(readVideo(reader));
+            Video currentVideo = readVideo(reader);
+            if (currentVideo != null) {
+                currentVideo.save();
+                videoInfo.add(currentVideo);
+            }
         }
 
         reader.endArray();
@@ -253,7 +268,7 @@ public class MovieInfo extends SugarRecord {
 
         reader.endObject();
 
-        return new Video(id, name, site, type, key, size, iso);
+        return new Video(this, id, name, site, type, key, size, iso);
     }
 
 //    "reviews": {
