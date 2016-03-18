@@ -7,6 +7,8 @@
 package com.franqueli.android.popularmovies;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.franqueli.android.popularmovies.model.MovieInfo;
@@ -21,7 +23,9 @@ public class TrailerListAdapter extends RecyclerView.Adapter <TrailerViewHolder>
 
     @Override
     public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TrailerViewHolder(parent);     // FIXME-fm : implement
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trailer_list_item, parent, false);
+
+        return new TrailerViewHolder(view);
     }
 
     @Override
@@ -31,6 +35,7 @@ public class TrailerListAdapter extends RecyclerView.Adapter <TrailerViewHolder>
 
     @Override
     public int getItemCount() {
-        return movieInfo.getMovieTrailers().size();
+        int count = movieInfo.getMovieTrailers().size();
+        return count;
     }
 }

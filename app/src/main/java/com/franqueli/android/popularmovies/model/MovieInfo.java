@@ -186,7 +186,7 @@ public class MovieInfo extends SugarRecord {
         ]
     },
     */
-
+    // FIXME: Video data is getting duplicated
     private List<Video> processTrailers(JsonReader reader) throws IOException {
 
         ArrayList<Video> videoInfo = new ArrayList<>();
