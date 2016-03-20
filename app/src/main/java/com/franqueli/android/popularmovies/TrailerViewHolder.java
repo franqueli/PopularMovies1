@@ -3,6 +3,7 @@ package com.franqueli.android.popularmovies;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.franqueli.android.popularmovies.model.MovieInfo;
 import com.franqueli.android.popularmovies.model.Video;
@@ -12,7 +13,7 @@ import com.franqueli.android.popularmovies.model.Video;
  * <p>
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
-public class TrailerViewHolder extends RecyclerView.ViewHolder {
+public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Video mVideo;
     public final View mView;
@@ -25,6 +26,8 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder {
         mTextView = (TextView) view.findViewById(R.id.trailerTextView);
 
         // TODO-fm: implement this view holder
+
+        mView.setOnClickListener(this);
     }
 
 
@@ -32,5 +35,11 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder {
         mVideo = video;
         // Update the values
         mTextView.setText(mVideo.getName());
+    }
+
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(mView.getContext(), "Video" + mVideo.getSite() + " " + mVideo.getMyId(), Toast.LENGTH_LONG).show();
+
     }
 }
