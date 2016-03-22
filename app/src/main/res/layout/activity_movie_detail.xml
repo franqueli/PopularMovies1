@@ -99,6 +99,14 @@
                 android:text="Large Text"
                 android:textAppearance="@style/MovieSynopsisStyle" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/TrailerHeaderText"
+                android:layout_gravity="left"
+                android:textAppearance="@style/HeaderStyle" />
+
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/movieDetailTrailerRecyclerView"
                 android:layout_width="match_parent"
