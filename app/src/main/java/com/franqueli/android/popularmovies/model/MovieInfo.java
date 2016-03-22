@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class MovieInfo extends SugarRecord {
     private boolean favorite;
+    private boolean current;
     private int movieDBId;
     private String title;
     private String synopsis;
@@ -43,13 +44,18 @@ public class MovieInfo extends SugarRecord {
 
 
     public MovieInfo(String title, String synopsis, String posterPath, float rating, float popularity, Date releaseDate, int movieDBId) {
+        this.movieDBId = movieDBId;
+        this.updateMovieInfo(title, synopsis, posterPath, rating, popularity, releaseDate);
+    }
+
+
+    public void updateMovieInfo(String title, String synopsis, String posterPath, float rating, float popularity, Date releaseDate) {
         this.title = title;
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
         this.popularity = popularity;
-        this.movieDBId = movieDBId;
     }
 
     public String getTitle() {
@@ -88,9 +94,30 @@ public class MovieInfo extends SugarRecord {
         this.favorite = favorite;
     }
 
+
+    public boolean isCurrent() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current = current;
+    }
+
     public int getRuntime() {
         return runtime;
     }
+
+    @Ignore
+    public static MovieInfo findMovieInfo(int movieDBId) {
+        MovieInfo movieInfo = null;
+        List<MovieInfo> movies = MovieInfo.find(MovieInfo.class,"movie_db_id = ?", movieDBId + "");
+        if (movies != null && movies.size() > 0) {
+            movieInfo = movies.get(0);
+        }
+
+        return movieInfo;
+    }
+
 
     @Ignore
     public String getPosterURL() {

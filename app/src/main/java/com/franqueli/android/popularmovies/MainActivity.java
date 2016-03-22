@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -340,8 +341,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private List<MovieInfo> processPopularMovieList(JsonReader reader) throws IOException, ParseException {
             List<MovieInfo> movieInfoList = new ArrayList<>();
 
-            // Clear out all the old popular movies
-            MovieInfo.deleteAll(MovieInfo.class);
+            // Clean up saved movies ready for a new list
+            resetMovies();
 
             reader.beginArray();
             while (reader.hasNext()) {
@@ -389,7 +390,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 reader.endObject();
 
                 // We've retrieved all the properties we need from the json. Now lets save it as an object
-                MovieInfo currMovieInfo = new MovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate, movieDBId);
+                MovieInfo currMovieInfo = updateMovie(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate, movieDBId);
+                currMovieInfo.setCurrent(true);
                 currMovieInfo.save();
                 movieInfoList.add(currMovieInfo);
             }
@@ -400,6 +402,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             editor.apply();
 
             return movieInfoList;
+        }
+
+        private MovieInfo updateMovie(String title, String synopsis, String posterPath, float rating, float popularity, Date releaseDate, int movieDBId) {
+            MovieInfo movieInfo = MovieInfo.findMovieInfo(movieDBId);
+            if (movieInfo == null) {
+                movieInfo = new MovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate, movieDBId);
+            } else {
+                movieInfo.updateMovieInfo(title, synopsis, posterPath, (float) rating, (float) popularity, releaseDate);
+            }
+
+            return movieInfo;
+        }
+
+        private void resetMovies() {
+            // Clear out all the old popular movies
+            Iterator<MovieInfo> movieInfoIterator = MovieInfo.findAll(MovieInfo.class);
+
+            while(movieInfoIterator.hasNext()) {
+                MovieInfo currentMovieInfo = movieInfoIterator.next();
+                if (!currentMovieInfo.isFavorite()) {
+                    currentMovieInfo.delete();
+                } else {
+                    currentMovieInfo.setCurrent(false);
+                    currentMovieInfo.save();
+                }
+            }
         }
     }
 }
