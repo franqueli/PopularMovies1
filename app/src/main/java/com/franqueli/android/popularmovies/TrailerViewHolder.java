@@ -1,5 +1,7 @@
 package com.franqueli.android.popularmovies;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -39,7 +41,9 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.O
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(mView.getContext(), "Video" + mVideo.getSite() + " " + mVideo.getMyId(), Toast.LENGTH_LONG).show();
-
+        String videoSite = mVideo.getSite();
+        if ("YouTube".equalsIgnoreCase(videoSite)) {
+            mView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + mVideo.getKey())));
+        }
     }
 }
