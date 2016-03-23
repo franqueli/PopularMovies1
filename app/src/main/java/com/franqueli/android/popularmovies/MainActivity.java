@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public static final String SELECTED_SORT_PREF = "sort_selected";
     public static final String GRID_POSITION_PARAM = "GRIDVIEW_POSITION";
 
-    private static final SortOptionsEnum[] SORT_OPTIONS = new SortOptionsEnum[]{SortOptionsEnum.Popularity, SortOptionsEnum.Rating};
+    private static final SortOptionsEnum[] SORT_OPTIONS = new SortOptionsEnum[]{SortOptionsEnum.Popularity, SortOptionsEnum.Rating, SortOptionsEnum.Favorites};
 
     protected GridView movieGridView;
     protected MovieInfoAdapter movieInfoAdapter;
@@ -163,8 +163,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences.Editor editor = MainActivity.this.preferences.edit();
         editor.remove(LAST_SYNCED_PREF);
         editor.apply();
-
-        syncMovieMetadata();
+        if (SORT_OPTIONS[selectedSortIndex] != SortOptionsEnum.Favorites) {
+            syncMovieMetadata();
+        } else {
+            movieInfoAdapter = new MovieInfoAdapter(MainActivity.this, SortOptionsEnum.Favorites);
+            movieGridView.setAdapter(movieInfoAdapter);
+        }
     }
 
     @Override
@@ -288,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             Log.d(LOG_TAG, "" + movieInfoList);
 
-            movieInfoAdapter = new MovieInfoAdapter(MainActivity.this, SortOptionsEnum.Popularity);
+            movieInfoAdapter = new MovieInfoAdapter(MainActivity.this, SORT_OPTIONS[selectedSortIndex]);
             movieGridView.setAdapter(movieInfoAdapter);
         }
 

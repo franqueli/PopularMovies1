@@ -6,7 +6,7 @@ package com.franqueli.android.popularmovies;
  * Copyright (c) 2015. Franqueli Mendez, All Rights Reserved
  */
 public enum SortOptionsEnum {
-    Popularity, Rating;
+    Popularity, Rating, Favorites;
 
 
 
@@ -17,6 +17,8 @@ public enum SortOptionsEnum {
             case Popularity:
                 break;
             case Rating:
+                break;
+            case Favorites:
                 break;
         }
         return super.toString();

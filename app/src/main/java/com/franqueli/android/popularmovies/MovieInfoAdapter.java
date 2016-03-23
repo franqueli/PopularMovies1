@@ -35,18 +35,18 @@ public class MovieInfoAdapter extends BaseAdapter {
     private void refreshMovieList(SortOptionsEnum sortBy) {
         String orderBy = null;
         switch (sortBy) {
-            case Popularity:
-                orderBy = "popularity desc";
+            case Favorites:
+                movieInfoList = MovieInfo.favoriteMovies();
                 break;
-            case Rating:
-                orderBy = "rating desc";
+            default:
+                movieInfoList = MovieInfo.currentMovies();
                 break;
         }
 
         // TODO : Don't order in query. The order of the movies should be determined by the query
 //        movieInfoList = MovieInfo.find(MovieInfo.class, "", null, "", orderBy, "");
 //        movieInfoList = MovieInfo.listAll(MovieInfo.class);
-        movieInfoList = MovieInfo.currentMovies();
+//        movieInfoList = MovieInfo.currentMovies();
 //        System.out.println("*** Movies: " + movieInfoList);
     }
 
