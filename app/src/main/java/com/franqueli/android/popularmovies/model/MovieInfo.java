@@ -130,8 +130,13 @@ public class MovieInfo extends SugarRecord {
     }
 
     @Ignore
-    public List<MovieInfo> favoriteMovies() {
+    public static List<MovieInfo> favoriteMovies() {
         return MovieInfo.find(MovieInfo.class,"favorite = ?", 1 + "");
+    }
+
+    @Ignore
+    public static List<MovieInfo> currentMovies() {
+        return MovieInfo.find(MovieInfo.class,"current = ?", 1 + "");
     }
 
     @Ignore

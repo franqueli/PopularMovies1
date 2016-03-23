@@ -45,7 +45,8 @@ public class MovieInfoAdapter extends BaseAdapter {
 
         // TODO : Don't order in query. The order of the movies should be determined by the query
 //        movieInfoList = MovieInfo.find(MovieInfo.class, "", null, "", orderBy, "");
-        movieInfoList = MovieInfo.listAll(MovieInfo.class);
+//        movieInfoList = MovieInfo.listAll(MovieInfo.class);
+        movieInfoList = MovieInfo.currentMovies();
 //        System.out.println("*** Movies: " + movieInfoList);
     }
 
