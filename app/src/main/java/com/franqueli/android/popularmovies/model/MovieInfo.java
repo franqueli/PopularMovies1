@@ -300,7 +300,15 @@ public class MovieInfo extends SugarRecord {
 
         reader.endObject();
 
-        return new Video(this, id, name, site, type, key, size, iso);
+        Video video;
+        List<Video>videoList = Video.find(Video.class, "my_id = ?", id);
+        if (videoList.size() > 0) {
+            video = videoList.get(0);
+        } else {
+            video = new Video(this, id, name, site, type, key, size, iso);
+        }
+
+        return video;
     }
 
 //    "reviews": {

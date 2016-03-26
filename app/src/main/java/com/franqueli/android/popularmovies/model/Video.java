@@ -1,6 +1,7 @@
 package com.franqueli.android.popularmovies.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 /**
  * Created by Franqueli Mendez on 1/29/16.
@@ -37,6 +38,12 @@ public class Video extends SugarRecord {
     public Video(MovieInfo movieInfo, String id, String name, String site, String type, String key, int size, String iso) {
         this.movieInfo = movieInfo;
         this.myId = id;
+
+        this.updateVideo(name, site, type, key, size, iso);
+    }
+
+    @Ignore
+    public void updateVideo(String name, String site, String type, String key, int size, String iso) {
         this.iso = iso;
         this.name = name;
         this.site = site;
