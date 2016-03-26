@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/play_button"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/playButtonDesc" />
 
     <TextView
         android:layout_width="wrap_content"

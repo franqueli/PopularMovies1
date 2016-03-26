@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:background="@color/green_background_color"
         android:gravity="center_vertical"
-        android:minHeight="80dp"
+        android:minHeight="40dp"
         android:paddingStart="20dp"
         android:text="Movie Title"
-        android:textAppearance="@style/MovieDetailTitleStyle"
+        android:textAppearance="@style/MovieDetailTitleStyleLand"
         android:textColor="@android:color/white" />
 
 
@@ -47,13 +47,29 @@
             android:layout_toEndOf="@id/movieDetailImageView"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/movieDetailReleaseDateTextView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="New Text"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/movieDetailReleaseDateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="New Text"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <Button
+                    android:id="@+id/movieDetailFavoriteButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginStart="10dp"
+                    android:onClick="toggleFavorite"
+                    android:text="Mark as Favorite" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/movieDetailRuntimeTextView"
@@ -63,6 +79,7 @@
                 android:text="New Text"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
+
             <TextView
                 android:id="@+id/movieDetailRatingTextView"
                 android:layout_width="match_parent"
@@ -71,21 +88,36 @@
                 android:text="New Text"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mark as Favorite"
-                android:layout_marginStart="10dp"
-                android:onClick="toggleFavorite"
-                android:id="@+id/movieDetailFavoriteButton" />
 
             <TextView
                 android:id="@+id/movieDetailSynopsisTextView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:scrollbars="vertical"
                 android:text="Large Text"
                 android:textAppearance="@style/MovieSynopsisStyle" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:text="@string/TrailerHeaderText"
+                android:textAppearance="@style/HeaderStyle" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/movieDetailTrailerRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1">
+
+            </android.support.v7.widget.RecyclerView>
+
 
         </LinearLayout>
 

@@ -11,4 +11,5 @@
     <string name="rating_text">"%1$s/10"</string>
     <string name="runtime_text">"%1$dmin"</string>
     <string name="TrailerHeaderText">Trailers:</string>
+    <string name="playButtonDesc">Play Button</string>
 </resources>
