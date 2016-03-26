@@ -4,11 +4,19 @@
     android:layout_height="match_parent">
 
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/play_button"
+        android:layout_gravity="center_vertical" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/trailerTextView" />
+        android:id="@+id/trailerTextView"
+        android:layout_gravity="center_vertical" />
 
 </LinearLayout>
