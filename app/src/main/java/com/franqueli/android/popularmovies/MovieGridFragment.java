@@ -67,17 +67,16 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         View rootView = inflater.inflate(R.layout.movie_grid_layout, container, false);
 
         movieGridView = (GridView) rootView.findViewById(R.id.gridview);
         movieGridView.setStretchMode(GridView.NO_STRETCH);
-        movieGridView.setAdapter(movieInfoAdapter);
+//        movieGridView.setAdapter(movieInfoAdapter);
 
         this.preferences = rootView.getContext().getSharedPreferences("Sync", Context.MODE_PRIVATE);
         this.selectedSortIndex = preferences.getInt(SELECTED_SORT_PREF, 0);
-
-        // Pass the selected Sort Type to the adaptor
-        movieInfoAdapter = new MovieInfoAdapter(rootView.getContext(), SORT_OPTIONS[selectedSortIndex]);
 
         movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,11 +98,23 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
         syncMovieMetadata();
         restoreScrollPosition(savedInstanceState);
 
-        setHasOptionsMenu(true);
-
         return rootView;
     }
 
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+////        movieInfoAdapter.notifyDataSetChanged();
+//    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        movieInfoAdapter = new MovieInfoAdapter(getActivity(), SORT_OPTIONS[selectedSortIndex]);
+        movieGridView.setAdapter(movieInfoAdapter);
+    }
 
     private void syncMovieMetadata() {
         long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
@@ -162,10 +173,8 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-//        restoreScrollPosition(savedInstanceState);
+        restoreScrollPosition(savedInstanceState);
     }
-
-
 
 
     @Override
@@ -300,6 +309,7 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
 
             movieInfoAdapter = new MovieInfoAdapter(getActivity(), SORT_OPTIONS[selectedSortIndex]);
             movieGridView.setAdapter(movieInfoAdapter);
+//            movieInfoAdapter.setSortBy(SORT_OPTIONS[selectedSortIndex]);
         }
 
         private String readIt(InputStream urlInputStream) throws IOException {
