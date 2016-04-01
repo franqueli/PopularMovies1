@@ -99,6 +99,8 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
         syncMovieMetadata();
         restoreScrollPosition(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 
