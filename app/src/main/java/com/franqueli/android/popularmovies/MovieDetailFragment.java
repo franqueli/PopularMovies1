@@ -1,12 +1,29 @@
 package com.franqueli.android.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.franqueli.android.popularmovies.model.MovieInfo;
+import com.orm.SugarRecord;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Calendar;
 
 
 /**
@@ -20,12 +37,10 @@ import android.view.ViewGroup;
 public class MovieDetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "movieIdParam";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private long movieIdParam;
 
     private OnFragmentInteractionListener mListener;
 
@@ -37,26 +52,25 @@ public class MovieDetailFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param movieIdParam Parameter 1.
      * @return A new instance of fragment MovieDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MovieDetailFragment newInstance(String param1, String param2) {
+    public static MovieDetailFragment newInstance(long movieIdParam) {
         MovieDetailFragment fragment = new MovieDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putLong(ARG_PARAM1, movieIdParam);
         fragment.setArguments(args);
+//        fragment.getArguments().getLong(ARG_PARAM1); // Remove me just debugging
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            movieIdParam = getArguments().getLong(ARG_PARAM1);
         }
     }
 
@@ -64,7 +78,28 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+
+        posterImageView = (ImageView) rootView.findViewById(R.id.movieDetailImageView);
+        titleTextView = (TextView) rootView.findViewById(R.id.movieHeaderTitleTextView);
+        releaseDateTextView = (TextView) rootView.findViewById(R.id.movieDetailReleaseDateTextView);
+        ratingTextView = (TextView) rootView.findViewById(R.id.movieDetailRatingTextView);
+        synopsisTextView = (TextView) rootView.findViewById(R.id.movieDetailSynopsisTextView);
+        runtimeTextView = (TextView) rootView.findViewById(R.id.movieDetailRuntimeTextView);
+        favoriteButtonView = (Button) rootView.findViewById(R.id.movieDetailFavoriteButton);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.movieDetailTrailerRecyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        synopsisTextView.setMovementMethod(new ScrollingMovementMethod());
+
+        // FIXME: Use param for movie id
+//        Intent intent = getIntent();
+//        movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
+
+        Log.d(LOG_TAG, "*** MovieParam: " + movieIdParam);
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,6 +126,144 @@ public class MovieDetailFragment extends Fragment {
         mListener = null;
     }
 
+// ---------------------------------
+
+    enum MovieDetailEnum {
+        Detail, Videos, Reviews;
+    }
+
+
+    public static final String MOVIE_ID_PARAM = "com.franqueli.android.popularmovies.MOVIE_ID";
+
+    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
+
+    private TheMovieDBAPI movieDBAPI;
+
+    private ImageView posterImageView;
+    private TextView titleTextView;
+    private TextView releaseDateTextView;
+    private TextView ratingTextView;
+    private TextView synopsisTextView;
+    private TextView runtimeTextView;
+    private Button favoriteButtonView;
+
+    private RecyclerView recyclerView;
+
+//    private long movieIdParam;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        movieDBAPI = new TheMovieDBAPI(getString(R.string.moviedb_api_key));
+
+        updateView();
+
+        DownloadMovieDetailsTask movieInfoTask = new DownloadMovieDetailsTask();
+        movieInfoTask.execute(MovieDetailEnum.Detail);
+
+    }
+
+    private void updateView() {
+        MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+
+        NumberFormat ratingFormat = NumberFormat.getInstance();
+        ratingFormat.setMaximumFractionDigits(1);
+
+        titleTextView.setText(movieInfo.getTitle());
+
+        String releaseDateText = "";
+        if (movieInfo.getReleaseDate() != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(movieInfo.getReleaseDate());
+
+            releaseDateText = String.format(getString(R.string.release_date_text), calendar.get(Calendar.YEAR));
+        }
+        releaseDateTextView.setText(releaseDateText);
+
+        int movieRuntime = movieInfo.getRuntime();
+        if (movieRuntime > 0) {
+            runtimeTextView.setVisibility(View.VISIBLE);
+            runtimeTextView.setText(String.format(getString(R.string.runtime_text), movieRuntime));
+        } else {
+            runtimeTextView.setVisibility(View.GONE);
+        }
+
+        ratingTextView.setText(String.format(getString(R.string.rating_text), ratingFormat.format(movieInfo.getRating())));
+        synopsisTextView.setText(movieInfo.getSynopsis());
+
+        favoriteButtonView.setText(movieInfo.isFavorite() ? "Unfavorite" : "Mark as favorite");
+
+        String posterURL = movieInfo.getPosterURL();
+        if (posterURL == null) {
+            posterImageView.setImageDrawable(getResources().getDrawable(R.drawable.movie_place_holder));
+        } else {
+            Picasso.with(getActivity()).load(posterURL).into(posterImageView);
+        }
+
+
+        // TODO-fm: should we be resetting this each time
+        recyclerView.setAdapter(new TrailerListAdapter(movieInfo));
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(MOVIE_ID_PARAM, movieIdParam);
+    }
+
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            movieIdParam = savedInstanceState.getLong(MOVIE_ID_PARAM, -1);
+        }
+    }
+
+
+    public void toggleFavorite (View view) {
+        MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+        movieInfo.setFavorite(!movieInfo.isFavorite());
+
+        movieInfo.save();
+
+        favoriteButtonView.setText(movieInfo.isFavorite() ? "Unfavorite" : "Mark as favorite");
+    }
+
+
+    class DownloadMovieDetailsTask extends AsyncTask<MovieDetailEnum, Void, Void> {
+
+        private MovieDetailEnum currentRequestType;
+
+        @Override
+        protected Void doInBackground(MovieDetailEnum... params) {
+
+            MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+
+            try {
+                movieInfo.updateWithJSON(movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            updateView();
+        }
+    }
+
+
+// ---------------------------------
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
