@@ -1,6 +1,6 @@
 package com.franqueli.android.popularmovies;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,8 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
@@ -64,6 +62,10 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
 
     private SharedPreferences preferences;
     private int selectedSortIndex;
+
+    public MovieGridFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

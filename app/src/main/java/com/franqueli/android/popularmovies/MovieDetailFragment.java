@@ -61,7 +61,6 @@ public class MovieDetailFragment extends Fragment {
         Bundle args = new Bundle();
         args.putLong(ARG_PARAM1, movieIdParam);
         fragment.setArguments(args);
-//        fragment.getArguments().getLong(ARG_PARAM1); // Remove me just debugging
         return fragment;
     }
 
