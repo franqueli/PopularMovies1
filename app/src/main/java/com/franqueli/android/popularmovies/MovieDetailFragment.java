@@ -166,6 +166,10 @@ public class MovieDetailFragment extends Fragment {
     private void updateView() {
         MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
+        if (movieInfo == null) {
+            return;
+        }
+
         NumberFormat ratingFormat = NumberFormat.getInstance();
         ratingFormat.setMaximumFractionDigits(1);
 
@@ -242,6 +246,10 @@ public class MovieDetailFragment extends Fragment {
         protected Void doInBackground(MovieDetailEnum... params) {
 
             MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
+
+            if (movieInfo == null) {
+                return null;
+            }
 
             try {
                 movieInfo.updateWithJSON(movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
