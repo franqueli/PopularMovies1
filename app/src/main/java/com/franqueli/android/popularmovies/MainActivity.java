@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements MovieDetailFragme
 
 
             // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction().add(R.id.main_master_container, firstFragment).add(R.id.main_master_container, secondFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_master_container, firstFragment).add(R.id.main_detail_container, secondFragment).commit();
 
 
         } else {
