@@ -22,12 +22,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
-public class MovieDetailActivity extends AppCompatActivity implements MovieDetailFragment.OnFragmentInteractionListener {
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+public class MovieDetailActivity extends AppCompatActivity {
 
     enum MovieDetailEnum {
         Detail, Videos, Reviews;

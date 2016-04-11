@@ -1,5 +1,6 @@
 package com.franqueli.android.popularmovies;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -51,6 +52,8 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
 
     private static final String LOG_TAG = MovieGridFragment.class.getSimpleName();
 
+    private static final String ARG_PARAM1 = "callItemSelectedListener";
+
     public static final String LAST_SYNCED_PREF = "last_synced";
     public static final String SELECTED_SORT_PREF = "sort_selected";
     public static final String GRID_POSITION_PARAM = "GRIDVIEW_POSITION";
@@ -63,9 +66,42 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
     private SharedPreferences preferences;
     private int selectedSortIndex;
 
+    private OnFragmentInteractionListener mListener;
+
+    private boolean callListenerOnSelect;
+
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param movieIdParam Parameter 1.
+     * @return A new instance of fragment MovieDetailFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static MovieGridFragment newInstance(boolean callListenerOnSelect) {
+        MovieGridFragment fragment = new MovieGridFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_PARAM1, callListenerOnSelect);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
     public MovieGridFragment() {
         // Required empty public constructor
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            callListenerOnSelect = getArguments().getBoolean(ARG_PARAM1);
+        }
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,16 +119,19 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
         movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                List<MovieInfo> allMovies = MovieInfo.listAll(MovieInfo.class);
 
                 MovieInfo selectedMovie = MovieInfo.findById(MovieInfo.class, id);
 
                 if (selectedMovie != null) {
                     Log.d(LOG_TAG, "Clicked item: " + selectedMovie.getTitle());
 
-                    Intent showMovieDetailIntent = new Intent(getActivity(), MovieDetailActivity.class);
-                    showMovieDetailIntent.putExtra(MovieDetailActivity.MOVIE_ID_PARAM, id);
-                    startActivity(showMovieDetailIntent);
+                    if (callListenerOnSelect && (mListener != null)) {
+                        mListener.onFragmentInteraction(id);
+                    } else {
+                        Intent showMovieDetailIntent = new Intent(getActivity(), MovieDetailActivity.class);
+                        showMovieDetailIntent.putExtra(MovieDetailActivity.MOVIE_ID_PARAM, id);
+                        startActivity(showMovieDetailIntent);
+                    }
                 }
             }
         });
@@ -117,6 +156,24 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
         movieInfoAdapter = new MovieInfoAdapter(getActivity(), SORT_OPTIONS[selectedSortIndex]);
         movieGridView.setAdapter(movieInfoAdapter);
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
 
     private void syncMovieMetadata() {
         long lastSynced = this.preferences.getLong(LAST_SYNCED_PREF, 0);
@@ -451,6 +508,24 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
                 }
             }
         }
+    }
+
+
+
+// ---------------------------------
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(long movieId);
     }
 
 }

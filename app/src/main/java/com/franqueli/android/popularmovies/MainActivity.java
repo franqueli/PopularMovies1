@@ -5,10 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements MovieDetailFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MovieGridFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private boolean mDetailPresent;
+    private MovieDetailFragment mDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,14 +22,15 @@ public class MainActivity extends AppCompatActivity implements MovieDetailFragme
             // Tablet layout
 
             // Create a new Fragment to be placed in the activity layout
-            MovieGridFragment firstFragment = new MovieGridFragment();
+            MovieGridFragment firstFragment = MovieGridFragment.newInstance(true);
 
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-            firstFragment.setArguments(getIntent().getExtras());
+//            // In case this activity was started with special instructions from an
+//            // Intent, pass the Intent's extras to the fragment as arguments
+//            firstFragment.setArguments(getIntent().getExtras());
 
             // Create a new Fragment to be placed in the activity layout
-            MovieDetailFragment secondFragment = MovieDetailFragment.newInstance(14);
+//            mDetailFragment = MovieDetailFragment.newInstance(14);
+            mDetailFragment = new MovieDetailFragment();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieDetailFragme
 
 
             // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction().add(R.id.main_master_container, firstFragment).add(R.id.main_detail_container, secondFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_master_container, firstFragment).add(R.id.main_detail_container, mDetailFragment).commit();
 
 
         } else {
@@ -68,7 +70,13 @@ public class MainActivity extends AppCompatActivity implements MovieDetailFragme
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(long movieId) {
+        // Create a new Fragment to be placed in the activity layout
+        MovieDetailFragment movieDetailFragment = MovieDetailFragment.newInstance(movieId);
 
+        // Add the fragment to the 'fragment_container' FrameLayout
+        getSupportFragmentManager().beginTransaction().remove(mDetailFragment).add(R.id.main_detail_container, movieDetailFragment).commit();
+
+        mDetailFragment = movieDetailFragment;
     }
 }
