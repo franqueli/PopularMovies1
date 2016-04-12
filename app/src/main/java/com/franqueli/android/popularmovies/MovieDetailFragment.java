@@ -85,14 +85,12 @@ public class MovieDetailFragment extends Fragment {
         runtimeTextView = (TextView) rootView.findViewById(R.id.movieDetailRuntimeTextView);
         favoriteButtonView = (Button) rootView.findViewById(R.id.movieDetailFavoriteButton);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.movieDetailTrailerRecyclerView);
+        reviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.movieDetailReviewsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         synopsisTextView.setMovementMethod(new ScrollingMovementMethod());
-
-        // FIXME: Use param for movie id
-//        Intent intent = getIntent();
-//        movieIdParam = intent.getLongExtra(MOVIE_ID_PARAM, -1);
 
         Log.d(LOG_TAG, "*** MovieParam: " + movieIdParam);
 
@@ -122,6 +120,7 @@ public class MovieDetailFragment extends Fragment {
     private Button favoriteButtonView;
 
     private RecyclerView recyclerView;
+    private RecyclerView reviewsRecyclerView;
 
 //    private long movieIdParam;
 
@@ -182,6 +181,7 @@ public class MovieDetailFragment extends Fragment {
 
         // TODO-fm: should we be resetting this each time
         recyclerView.setAdapter(new TrailerListAdapter(movieInfo));
+        reviewsRecyclerView.setAdapter(new MovieReviewAdapter(movieInfo));
     }
 
 

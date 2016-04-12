@@ -339,7 +339,11 @@ public class MovieInfo extends SugarRecord {
         reader.beginArray();
 
         while (reader.hasNext()) {
-            reviews.add(readReview(reader));
+            Review currentReview = readReview(reader);
+            if (currentReview != null) {
+                currentReview.save();
+                reviews.add(currentReview);
+            }
         }
 
         reader.endArray();
