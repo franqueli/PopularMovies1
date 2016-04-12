@@ -27,8 +27,6 @@ public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.O
         mView = view;
         mTextView = (TextView) view.findViewById(R.id.trailerTextView);
 
-        // TODO-fm: implement this view holder
-
         mView.setOnClickListener(this);
     }
 

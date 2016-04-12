@@ -144,6 +144,13 @@ public class MovieInfo extends SugarRecord {
         return Video.find(Video.class, "movie_info = ?", getId() + "");
     }
 
+    @Ignore
+    public List<Review> getMovieReviews() {
+        return Review.find(Review.class, "movie_info = ?", getId() + "");
+    }
+
+
+
     @Override
     public String toString() {
         return "ID: " + getId() + " Popularity: " + popularity + " Title: " + title  + " PosterPath: " + posterPath;
@@ -385,7 +392,16 @@ public class MovieInfo extends SugarRecord {
 
         reader.endObject();
 
-        return new Review(id, author, content, url);
+
+        Review review;
+        List<Review>reviewList = Review.find(Review.class, "my_id = ?", id);
+        if (reviewList.size() > 0) {
+            review = reviewList.get(0);
+        } else {
+            review = new Review(this, id, author, content, url);
+        }
+
+        return review;
     }
 
 

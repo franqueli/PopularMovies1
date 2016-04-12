@@ -1,6 +1,7 @@
 package com.franqueli.android.popularmovies.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 /**
  * Created by Franqueli Mendez on 2/3/16.
@@ -14,13 +15,22 @@ public class Review extends SugarRecord {
     private String content;
     private String url;
 
+    private MovieInfo movieInfo;
+
     // Default constructor for SugarORM
     public Review() {
 
     }
 
-    public Review(String id, String author, String content, String url) {
+    public Review(MovieInfo movieInfo, String id, String author, String content, String url) {
+        this.movieInfo = movieInfo;
         this.myId = id;
+
+        updateReview(author, content, url);
+    }
+
+    @Ignore
+    public void updateReview(String author, String content, String url) {
         this.author = author;
         this.content = content;
         this.url = url;
