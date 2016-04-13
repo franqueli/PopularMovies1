@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements MovieGridFragment.OnFragmentInteractionListener {
 
@@ -20,6 +21,14 @@ public class MainActivity extends AppCompatActivity implements MovieGridFragment
 
         if (mDetailPresent) {
             // Tablet layout
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+
 
             // Create a new Fragment to be placed in the activity layout
             MovieGridFragment firstFragment = MovieGridFragment.newInstance(true);
@@ -63,20 +72,27 @@ public class MainActivity extends AppCompatActivity implements MovieGridFragment
 
                 // Add the fragment to the 'fragment_container' FrameLayout
                 getSupportFragmentManager().beginTransaction().add(R.id.main_fragment_container, firstFragment).commit();
-//                    add(R.id.main_fragment_container, firstFragment).commit();
             }
         }
-
     }
 
     @Override
     public void onFragmentInteraction(long movieId) {
-        // Create a new Fragment to be placed in the activity layout
-        MovieDetailFragment movieDetailFragment = MovieDetailFragment.newInstance(movieId);
 
-        // Add the fragment to the 'fragment_container' FrameLayout
-        getSupportFragmentManager().beginTransaction().remove(mDetailFragment).add(R.id.main_detail_container, movieDetailFragment).commit();
+        MovieDetailFragment movieDetailFragment = (MovieDetailFragment)getSupportFragmentManager().findFragmentById(R.id.main_detail_container);
+        if (movieDetailFragment != null) {
+            movieDetailFragment.setMovieIdParam(movieId);
+            movieDetailFragment.updateView();
+        }
 
-        mDetailFragment = movieDetailFragment;
     }
+
+
+    public void toggleFavorite (View view) {
+        MovieDetailFragment movieDetailFragment = (MovieDetailFragment)getSupportFragmentManager().findFragmentById(R.id.main_detail_container);
+        if (movieDetailFragment != null) {
+            movieDetailFragment.toggleFavorite(view);
+        }
+    }
+
 }

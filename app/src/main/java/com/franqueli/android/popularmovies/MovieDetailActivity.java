@@ -71,6 +71,9 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
     public void toggleFavorite (View view) {
-        movieDetailFragment.toggleFavorite(view);
+        MovieDetailFragment detailFragment = (MovieDetailFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (detailFragment != null) {
+            detailFragment.toggleFavorite(view);
+        }
     }
 }

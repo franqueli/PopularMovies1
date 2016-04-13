@@ -1,8 +1,5 @@
 package com.franqueli.android.popularmovies;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -37,7 +34,7 @@ import java.util.Calendar;
 public class MovieDetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "movieIdParam";
+    public static final String ARG_PARAM1 = "movieIdParam";
 
     // TODO: Rename and change types of parameters
     private long movieIdParam;
@@ -75,7 +72,7 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         posterImageView = (ImageView) rootView.findViewById(R.id.movieDetailImageView);
         titleTextView = (TextView) rootView.findViewById(R.id.movieHeaderTitleTextView);
@@ -111,6 +108,7 @@ public class MovieDetailFragment extends Fragment {
 
     private TheMovieDBAPI movieDBAPI;
 
+    private View rootView;
     private ImageView posterImageView;
     private TextView titleTextView;
     private TextView releaseDateTextView;
@@ -137,12 +135,19 @@ public class MovieDetailFragment extends Fragment {
 
     }
 
-    private void updateView() {
+    public void updateView() {
+        if (getArguments() != null) {
+            movieIdParam = getArguments().getLong(ARG_PARAM1);
+        }
+
         MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
-        if (movieInfo == null) {
+        if (movieInfo == null || getActivity() == null) {
+            rootView.setVisibility(View.GONE);
             return;
         }
+
+        rootView.setVisibility(View.VISIBLE);
 
         NumberFormat ratingFormat = NumberFormat.getInstance();
         ratingFormat.setMaximumFractionDigits(1);
@@ -212,6 +217,9 @@ public class MovieDetailFragment extends Fragment {
         favoriteButtonView.setText(movieInfo.isFavorite() ? "Unfavorite" : "Mark as favorite");
     }
 
+    public void setMovieIdParam(long movieIdParam) {
+        this.movieIdParam = movieIdParam;
+    }
 
     class DownloadMovieDetailsTask extends AsyncTask<MovieDetailEnum, Void, Void> {
 
