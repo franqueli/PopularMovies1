@@ -11,5 +11,11 @@
     <string name="rating_text">"%1$s/10"</string>
     <string name="runtime_text">"%1$dmin"</string>
     <string name="TrailerHeaderText">Trailers:</string>
+    <string name="ReviewHeaderText">Reviews:</string>
     <string name="playButtonDesc">Play Button</string>
+    <string name="title_activity_movie_grid">PopularMovies</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
