@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridFragment
         if (movieDetailFragment != null) {
             movieDetailFragment.setMovieIdParam(movieId);
             movieDetailFragment.updateView();
+            movieDetailFragment.downloadUpdates();
         }
 
     }
