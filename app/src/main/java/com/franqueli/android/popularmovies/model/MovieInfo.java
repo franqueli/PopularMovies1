@@ -12,9 +12,7 @@ import java.io.CharArrayReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -141,6 +139,15 @@ public class MovieInfo extends SugarRecord {
 
     @Ignore
     public List<Video> getMovieTrailers() {
+//        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+//
+//        Iterator<Video> iter =  Video.findAll(Video.class);
+//        System.out.println("*** GetMovieTrailers start *** " + stackTraceElements[2] + "--" + stackTraceElements[3]);
+//        while(iter.hasNext()) {
+//            Video video = iter.next();
+//            System.out.println("**** Video: " + video);
+//        }
+//        System.out.println("*** GetMovieTrailers end ***");
         return Video.find(Video.class, "movie_info = ?", getId() + "");
     }
 
@@ -173,7 +180,7 @@ public class MovieInfo extends SugarRecord {
                         while (reader.hasNext()) {
                             if (reader.nextName().equals("results")) {
                                 this.movieTrailers = this.processTrailers(reader);
-                                System.out.println("**** Videos " + movieTrailers);
+//                                System.out.println("**** Videos " + movieTrailers);
                             } else {
                                 reader.skipValue();
                             }
@@ -185,7 +192,8 @@ public class MovieInfo extends SugarRecord {
                         reader.beginObject();
                         while (reader.hasNext()) {
                             if (reader.nextName().equals("results")) {
-                                System.out.println("***** Reviews " + this.processReviews(reader));
+                                List<Review>reviews = this.processReviews(reader);
+//                                System.out.println("***** Reviews " + reviews);
                             } else {
                                 reader.skipValue();
                             }
@@ -229,7 +237,7 @@ public class MovieInfo extends SugarRecord {
     private List<Video> processTrailers(JsonReader reader) throws IOException {
 
         ArrayList<Video> videoInfo = new ArrayList<>();
-        Log.d("MovieInfo","***** ProcessTrailers *****");
+//        Log.d("MovieInfo","***** ProcessTrailers *****");
 
         reader.beginArray();
 
@@ -237,6 +245,7 @@ public class MovieInfo extends SugarRecord {
             Video currentVideo = readVideo(reader);
             if (currentVideo != null) {
                 currentVideo.save();
+//                Log.d("MovieInfo", "*** AfterSave:Video " + currentVideo.toString());
                 videoInfo.add(currentVideo);
             }
         }
@@ -311,8 +320,11 @@ public class MovieInfo extends SugarRecord {
         List<Video>videoList = Video.find(Video.class, "my_id = ?", id);
         if (videoList.size() > 0) {
             video = videoList.get(0);
+//            video.updateVideo(name, site, type, key, size, iso);
+//            Log.d("MovieInfo", "*** RecycleVideo: " + video.toString());
         } else {
             video = new Video(this, id, name, site, type, key, size, iso);
+//            Log.d("MovieInfo", "*** NewVideo: " + video.toString());
         }
 
         return video;
@@ -334,7 +346,7 @@ public class MovieInfo extends SugarRecord {
 
     private List<Review> processReviews(JsonReader reader) throws IOException {
         List<Review> reviews = new ArrayList<>();
-        System.out.println("***** ProcessReviews *****");
+//        System.out.println("***** ProcessReviews *****");
 
         reader.beginArray();
 
@@ -401,6 +413,7 @@ public class MovieInfo extends SugarRecord {
         List<Review>reviewList = Review.find(Review.class, "my_id = ?", id);
         if (reviewList.size() > 0) {
             review = reviewList.get(0);
+//            review.updateReview(author, content, url);
         } else {
             review = new Review(this, id, author, content, url);
         }
