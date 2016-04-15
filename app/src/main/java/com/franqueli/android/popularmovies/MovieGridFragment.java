@@ -25,6 +25,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.franqueli.android.popularmovies.model.MovieInfo;
+import com.franqueli.android.popularmovies.model.Review;
+import com.franqueli.android.popularmovies.model.Video;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -501,11 +503,26 @@ public class MovieGridFragment extends Fragment implements AdapterView.OnItemSel
             while(movieInfoIterator.hasNext()) {
                 MovieInfo currentMovieInfo = movieInfoIterator.next();
                 if (!currentMovieInfo.isFavorite()) {
+                    removeMovieDependencies(currentMovieInfo);
                     currentMovieInfo.delete();
                 } else {
                     currentMovieInfo.setCurrent(false);
                     currentMovieInfo.save();
                 }
+            }
+        }
+
+        // Work around Sugar ORM issue with entity reference
+        private void removeMovieDependencies(MovieInfo currentMovieInfo) {
+            List<Video>videos = currentMovieInfo.getMovieTrailers();
+
+            for (Video currentVideo : videos) {
+                currentVideo.delete();
+            }
+
+            List<Review>reviews = currentMovieInfo.getMovieReviews();
+            for (Review currentReview : reviews) {
+                currentReview.delete();
             }
         }
     }
