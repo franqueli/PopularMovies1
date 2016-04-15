@@ -32,9 +32,30 @@ import java.util.Calendar;
  * create an instance of this fragment.
  */
 public class MovieDetailFragment extends Fragment {
+    enum MovieDetailEnum {
+        Detail, Videos, Reviews;
+    }
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_PARAM1 = "movieIdParam";
+    public static final String MOVIE_ID_PARAM = "com.franqueli.android.popularmovies.MOVIE_ID";
+
+    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
+
+    private TheMovieDBAPI movieDBAPI;
+
+    private View rootView;
+    private ImageView posterImageView;
+    private TextView titleTextView;
+    private TextView releaseDateTextView;
+    private TextView ratingTextView;
+    private TextView synopsisTextView;
+    private TextView runtimeTextView;
+    private Button favoriteButtonView;
+
+    private RecyclerView recyclerView;
+    private RecyclerView reviewsRecyclerView;
 
     // TODO: Rename and change types of parameters
     private long movieIdParam;
@@ -95,50 +116,29 @@ public class MovieDetailFragment extends Fragment {
     }
 
 
-// ---------------------------------
-
-    enum MovieDetailEnum {
-        Detail, Videos, Reviews;
-    }
-
-
-    public static final String MOVIE_ID_PARAM = "com.franqueli.android.popularmovies.MOVIE_ID";
-
-    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
-
-    private TheMovieDBAPI movieDBAPI;
-
-    private View rootView;
-    private ImageView posterImageView;
-    private TextView titleTextView;
-    private TextView releaseDateTextView;
-    private TextView ratingTextView;
-    private TextView synopsisTextView;
-    private TextView runtimeTextView;
-    private Button favoriteButtonView;
-
-    private RecyclerView recyclerView;
-    private RecyclerView reviewsRecyclerView;
-
-//    private long movieIdParam;
-
     @Override
     public void onResume() {
         super.onResume();
 
-        movieDBAPI = new TheMovieDBAPI(getString(R.string.moviedb_api_key));
-
         updateView();
 
+        downloadUpdates();
+//        Log.d(LOG_TAG, "*** onResume ***");
+    }
+
+    public void downloadUpdates() {
+        movieDBAPI = new TheMovieDBAPI(getString(R.string.moviedb_api_key));
         DownloadMovieDetailsTask movieInfoTask = new DownloadMovieDetailsTask();
         movieInfoTask.execute(MovieDetailEnum.Detail);
-
     }
+
 
     public void updateView() {
         if (getArguments() != null) {
             movieIdParam = getArguments().getLong(ARG_PARAM1);
         }
+
+//        Log.d(LOG_TAG, "*** updateView ***");
 
         MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
@@ -183,7 +183,8 @@ public class MovieDetailFragment extends Fragment {
             Picasso.with(getActivity()).load(posterURL).into(posterImageView);
         }
 
-
+//        Log.d(LOG_TAG, "*** Trailers: " + Arrays.toString(movieInfo.getMovieTrailers().toArray()));
+//        Log.d(LOG_TAG, "*** Reviews: " + Arrays.toString(movieInfo.getMovieReviews().toArray()));
         // TODO-fm: should we be resetting this each time
         recyclerView.setAdapter(new TrailerListAdapter(movieInfo));
         reviewsRecyclerView.setAdapter(new MovieReviewAdapter(movieInfo));
@@ -208,7 +209,7 @@ public class MovieDetailFragment extends Fragment {
     }
 
 
-    public void toggleFavorite (View view) {
+    public void toggleFavorite(View view) {
         MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
         movieInfo.setFavorite(!movieInfo.isFavorite());
 
@@ -227,13 +228,13 @@ public class MovieDetailFragment extends Fragment {
 
         @Override
         protected Void doInBackground(MovieDetailEnum... params) {
-
+//            Log.d(LOG_TAG, "***** DoInBackground *****");
             MovieInfo movieInfo = SugarRecord.findById(MovieInfo.class, movieIdParam);
 
             if (movieInfo == null) {
                 return null;
             }
-
+//            Log.d(LOG_TAG, "***** MovieInfoNotNull *****");
             try {
                 movieInfo.updateWithJSON(movieDBAPI.requestAllDetails(movieInfo.getMovieDBId() + ""));
             } catch (IOException e) {
@@ -247,6 +248,8 @@ public class MovieDetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+//            Log.d(LOG_TAG, "***** onPostExecute *****");
 
             updateView();
         }
