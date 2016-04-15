@@ -83,12 +83,13 @@ public class Video extends SugarRecord {
 
     @Override
     public String toString() {
+        String movieInfoString = movieInfo != null ? movieInfo.toString() : "--MovieInfoNull--";
         return "Video{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", site='" + site + '\'' +
                 ", key='" + key + '\'' +
-
+                ", MovieInfo: " + movieInfoString + '\'' +
                 '}';
     }
 }
